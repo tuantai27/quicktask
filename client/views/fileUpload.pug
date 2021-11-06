@@ -1,0 +1,67 @@
+script(type="text/javascript")
+    | const main_templates_fileUpload = `
+    div(:ref="'forms_upload_' + id",:id="'forms_upload_' + id",class="container_file",:style="getStyle()")
+        div(class="middle_file",style="opacity:1;")
+            input(type="file",@change="changeAction($event)",:id="'file_' + id",class="d-none")
+            a(class="fa fa-cloud-upload p-0",title="new",variant="primary",@click="clickAction")
+            span(style="display: block;font-size: 10px;")
+                label(:for="'file_' + id")
+                    strong(style="cursor: pointer;") Choose a file 
+                    br
+                    |    or drag it here.
+    | `;
+script(type="text/javascript").
+    Vue.component('file-upload',{
+        props:{
+            'id'                    : {type:[String]      ,default: ''},
+            'height'                : {type:[String]      ,default: '100px'},
+            'index'                 : {type:[Number]      ,default: ''},
+            'buildUpload'           : {type:[Function]    ,default: () => {}},
+            'typeDetail'            : {type:[String]      ,default: ''}
+        },
+        data:function() {
+            return {
+                typeDetail2 : this.typeDetail
+            };
+        },
+        mounted: function() {
+            if (this.isAdvancedUpload()) {
+                var $form = $(this.$refs['forms_upload_' + this.id]);
+                var self = this;
+                $form.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                })
+                .on('dragover dragenter', function() {
+                    $form.addClass('is-dragover');
+                })
+                .on('dragleave dragend drop', function() {
+                    $form.removeClass('is-dragover');
+                })
+                .on('drop', function(e) {
+                    self.buildUpload(e.originalEvent.dataTransfer.files, self.index, self.typeDetail2);
+                });
+            }
+        },
+        methods:{
+            isAdvancedUpload : function() {
+                let div = document.createElement('div');
+                return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+            },
+            changeAction : function(event) {
+                if (event.target && event.target.files) {
+                    this.buildUpload(event.target.files, this.index, this.typeDetail2);
+                    $('#file_' + this.id).val('');
+                }   
+            },
+            clickAction : function(){
+                $('#file_' + this.id).click();
+            },
+            getStyle() {
+                return {
+                    "height"  : this.height,
+                    "outline" : "3px dashed #CCD6DD",
+                    "outline-offset" : "-5px"
+                }
+            }
+        },template:main_templates_fileUpload});

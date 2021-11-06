@@ -1,0 +1,131 @@
+doctype html
+title Quản lý Nhân Sự
+meta(charset="UTF-8")
+meta(name="viewport",content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(rel="stylesheet",type="text/css",href="/css/shared.css")
+link(rel="stylesheet",type="text/css",href="/css/bootstrap-vue.css")
+link(rel="stylesheet",type="text/css",href="/css/vue-good-table.min.css")
+link(rel="stylesheet",type="text/css",href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.6/viewer.min.css")
+link(rel="stylesheet",type="text/css",href="/css/index.css")
+body
+    div(id='alertHolder')
+        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
+            span(v-html="alertText")
+        
+    div(id="vueel",style="display:none;")
+        menu-page
+        b-alert.position-fixed(v-model='modal.countDown' style='z-index: 2000; width:50%; top: 25%;left: 50%;margin-right: -50%;transform: translate(-50%, -50%);', :variant='modal.variant', :fade='true', dismissible='', @dismissed="modal.countDown=0",v-html="modal.alertText")
+        b-card(no-body='')
+            b-tabs(card='')
+                b-tab(title='Import File' active='')
+                    b-row.mb-2
+                        .col-12
+                            b-list-group(class="overflow-auto", style="height:85vh;")
+                                b-list-group-item
+                                    div(id="images_document",class="row bpa-loading")
+                                    file-upload(:id="'file_document'",:index="1",:build-upload="buildUpload",:type-detail="'detail1'",:height="'81vh'")
+                b-tab(title='History')
+                    .row
+                        .col-md-2
+                            b-form-group(label="Tháng Năm:",label-cols-sm="2",label-align-sm="right")
+                        .col-md-4
+                            b-form-select(v-model="search.monthly",:options="search.arrMonthly")
+                        .col-md-1
+                            b-button.mr-2(size='sm'  @click='clickSearch()')
+                                | Search
+                        .col-md-2
+                            b-button.mr-2(size='sm'  @click='clickDownloadReports()')
+                                | Download Reports
+                    .row
+                        .col
+                            vue-good-table(:columns='configs.columns3',
+                                    :rows='configs.rows3',
+                                    :line-numbers="true",
+                                    :search-options="{enabled: true, skipDiacritics: true, trigger: 'enter', placeholder: 'Search name then press Enter'}"
+                                    :pagination-options="{enabled: true, mode: 'records', perPage: 50, perPageDropdown: [10, 20, 30, 40, 50], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev', rowsPerPageLabel: 'Rows per page', ofLabel: 'of', pageLabel: 'page', allLabel: 'All'}"
+                                )
+                                template(slot="table-row" slot-scope="props")
+                                    div(v-if="props.column.field === 'status_name'") 
+                                        b-badge(v-if="props.row.status_name == 'đã gởi email.'", pill='', variant='warning') {{props.row.status_name}}
+                                        b-badge(v-else-if="props.row.status_name == 'Đã Xác nhận.'",pill='',variant='success') {{props.row.status_name}}
+                                        b-badge(v-else="", pill='',variant='danger') {{props.row.status_name}}
+                                    div(v-else-if="props.column.field === 'updated_at'")
+                                        | {{ formatLocalData(props.row.updated_at) }}
+                                    div(v-else-if="props.column.field === 'action'") 
+                                        b-button.mr-2(size='sm'  @click='clickEdit(props.row.uuid)')
+                                            | Edit
+                                        b-button.mr-2(size='sm', variant="danger", @click='clickDelete(props.row.uuid)')
+                                            | Delete
+                                    div(v-else)
+                                        span {{props.formattedRow[props.column.field]}}
+        b-modal(v-model="modal2.showModal",centered="",title="'Edit dữ liệu'",size="lg",@close="modal2.showModal = false")
+            .row
+                .col-md-12
+                    b-form-group(label="Tên nhân Viên:",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(v-model="modal2.dataModal.name")
+                .col-md-12
+                    b-form-group(label="Tháng năm:",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(v-model="modal2.dataModal.monthly")
+                .col-md-12
+                    b-form-group(label="Email:",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(v-model="modal2.dataModal.email")
+                .col-md-12
+                    b-form-group(label="Trạng thái:",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(v-model="modal2.dataModal.status_name")
+                .col-md-12
+                    b-form-group(label="Ý Kiến:",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(v-model="modal2.dataModal.comment")
+            div(slot="modal-footer")
+                b-button(variant="default mr-2",@click="runCancel2") Cancel
+                b-button(variant="primary mr-2",@click="runUpdate($event)") Edit      
+        b-modal(v-model="modal.showModal",:no-close-on-backdrop="true",centered="",title="'kiểm tra dữ liệu'",size="lg",@close="modal.showModal = false")
+            .row
+                .col-md-6
+                    .row
+                        .col-md-12
+                            b-form-group(label="Tên nhân Viên:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model="modal.dataModal.name")
+                        .col-md-12
+                            b-form-group(label="Lương tháng:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model="modal.dataModal.monthly")
+                        .col-md-12
+                            b-form-group(label="Email Nhận:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model="modal.dataModal.email")
+                        .col-md-12
+                            b-form-group(label="Thời Gian:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model="modal.dataModal.time")
+                        .col-md-12
+                            b-form-group(label="Email Bcc:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model="modal.dataModal.emailBcc")
+                        .col-md-12
+                            b-form-group(label="uuid:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model="modal.dataModal.uuid")
+                .col-md-6
+                    .row 
+                        .col-md-12
+                            b-form-group(label="Files:",label-cols-sm="3",label-align-sm="right")
+                                file-upload(:id="'file_document_aaaa'",:index="1",:build-upload="buildUpload_2",:type-detail="'detail2'",:height="'20vh'")
+                    .row 
+                        .col-md-12
+                            ul
+                             li(v-for="item in modal.dataModal.subDetail",:key="item")
+                              || {{ item }}
+            div(slot="modal-footer")
+                b-button(variant="default mr-2",@click="runCancel") Cancel
+                b-button(variant="primary mr-2",@click="runSendEmail($event)") Gởi Email          
+
+script(type="text/javascript",src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+script(type="text/javascript",src="./js/dataMain.js")
+script(type="text/javascript",src="./js/bootstrap.js")
+script(type="text/javascript",src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js")
+script(type="text/javascript",src="./js/vue-good-table.min.js")
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js')
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js')
+script(src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js")
+script(type="text/javascript", src="js/mainSalary.js")
+include ./fileUpload
+include ./menu
+script("text/javascript").
+    if (document.getElementById('vueel')) {
+        document.getElementById('vueel').style = 'display:block;';
+    }

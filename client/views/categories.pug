@@ -1,0 +1,29 @@
+script(type="text/javascript")
+    | const main_templates_categories = `
+    span 
+        | {{getName()}}
+
+    | `;
+script(type="text/javascript").
+    Vue.component('categories',{
+        name:"categories",
+        props:{
+            'arr' : {type:[Array]   ,default: () => { return []}},
+            'id'  : {type:[Number,String]  ,default: () => { return 0} },
+        },
+        data:function() {
+            return {
+            };
+        },
+        mounted: function() {
+        },
+        methods:{
+            getName : function() {
+                for (let i = 0; i < this.arr.length; i++) {
+                    if (this.arr[i].value == this.id) {
+                        return this.arr[i].text;
+                    }
+                }
+                return '';
+            }
+        },template:main_templates_categories});

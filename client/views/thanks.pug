@@ -1,0 +1,19 @@
+doctype html
+title Quản lý Nhân Sự
+meta(charset="UTF-8")
+meta(name="viewport",content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(rel="stylesheet",type="text/css",href="/css/shared.css")
+link(rel="stylesheet",type="text/css",href="/css/index.css")
+body
+    div(id='alertHolder')
+        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
+            span(v-html="alertText")
+    div(id="vueel" style="padding:20px")
+        b-card(no-body='')
+            .jumbotron.text-center
+                h1.display-3 Thank You!
+                p.lead
+                    strong
+                    |  Bạn đã xác nhận thành công.
+
+script(type="text/javascript",src="./js/bootstrap.js")

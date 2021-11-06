@@ -1,0 +1,27 @@
+script(type="text/javascript")
+    | const main_templates_menus = `
+    div
+        b-navbar(toggleable='lg' type='dark' variant='info')
+            b-navbar-toggle(target='nav-collapse')
+            b-collapse#nav-collapse(is-nav='')
+                b-navbar-nav
+                    b-nav-item(href='./form?page=hrm') Home
+                    b-nav-item(href='./Salary') Salary
+                    b-nav-item(href='./excel') Excel
+            // Right aligned nav items
+            b-navbar-nav.ml-auto
+                b-navbar-nav(right='')
+                    b-nav-item(href='./destroy_session') Sign Out
+
+    | `;
+script(type="text/javascript").
+    Vue.component('menuPage',{
+        name:"menuPage",
+        props:{},
+        data:function() {
+            return {};
+        },
+        mounted: function() {
+        },
+        methods:{
+        },template:main_templates_menus});

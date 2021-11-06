@@ -1,0 +1,28 @@
+doctype html
+title Quản lý Nhân Sự
+meta(charset="UTF-8")
+meta(name="viewport",content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(rel="stylesheet",type="text/css",href="/css/shared.css")
+link(rel="stylesheet",type="text/css",href="/css/bootstrap-vue.css")
+link(rel="stylesheet",type="text/css",href="/css/index.css")
+body
+    div(id='alertHolder')
+        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
+            span(v-html="alertText")
+    .d-flex.justify-content-center.align-items-center(id="vueel", style="margin-top:10%;")
+        .col-md-3
+            b-card(title="Business Process Automation")
+                b-form
+                    b-form-group(label="Email",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(,v-model="userName")
+                    b-form-group(label="Password",label-cols-sm="3",label-align-sm="right")
+                        b-form-input(type="password",v-model="passWord")
+                    b-form-group(label="",label-cols-sm="3",label-align-sm="right")
+                        b-button(variant='primary' @click="actionLogin" v-html="getText()") 
+
+script(type="text/javascript",src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+script(type="text/javascript",src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js")
+script(type="text/javascript",src="./js/bootstrap.js")
+script(type="text/javascript",src="./js/bootstrap-vue.js")
+script(src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js")
+script(type="text/javascript", src="js/mainLogin.js")

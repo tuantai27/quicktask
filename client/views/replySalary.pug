@@ -1,0 +1,33 @@
+doctype html
+title Ý kiến Nhân Viên
+meta(charset="UTF-8")
+meta(name="viewport",content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(rel="stylesheet",type="text/css",href="/css/shared.css")
+link(rel="stylesheet",type="text/css",href="/css/bootstrap-vue.css")
+link(rel="stylesheet",type="text/css",href="/css/index.css")
+body
+    div(id='alertHolder')
+        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
+            span(v-html="alertText")
+    div(id="vueel" style="padding:20px; display:none;")
+        .d-flex.justify-content-center.align-items-center(v-if="flag === true", style="margin-top:8%")
+            .col-md-4
+                b-card(title="Ý kiến của bạn")
+                    b-form-textarea#textarea-large(size='lg' placeholder='', rows="10" max-rows="15", v-model="comment")
+                    b-button(variant="success", style="margin-left:50%;", @click="replyServer(event)", class="mt-4") Gởi
+        div(v-show="flag === false",class="jumbotron text-center",style="display:none;",id='thanks')
+            h1.display-3 Thank You!
+            p.lead
+                strong
+                |  Bạn đã gởi ý kiến
+
+script(type="text/javascript",src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+script(type="text/javascript",src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js")
+script(type="text/javascript",src="./js/bootstrap.js")
+script(type="text/javascript",src="./js/bootstrap-vue.js")
+script(src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js")
+script(type="text/javascript", src="js/mainReply.js")
+script("text/javascript").
+    if (document.getElementById('vueel')) {
+        document.getElementById('vueel').style = 'display:block;';
+    }
