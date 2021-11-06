@@ -1,0 +1,11 @@
+config_frontend.js
+config_frontend.old.js
+certs/*
+site/client/css/*
+salary/files/*
+salary/files_done/*
+nbproject/private/*
+node_modules/*
+*.code-workspace
+package-lock.json
+config.js
