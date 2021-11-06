@@ -1,0 +1,125 @@
+doctype html
+title Quản lý Nhân Sự
+meta(charset="UTF-8")
+meta(name="viewport",content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(rel="stylesheet",type="text/css",href="/css/shared.css")
+link(rel="stylesheet",type="text/css",href="/css/bootstrap-vue.css")
+link(rel="stylesheet",type="text/css",href="/css/vue-good-table.min.css")
+link(rel="stylesheet",type="text/css",href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.6/viewer.min.css")
+link(rel="stylesheet",type="text/css",href="/css/index.css")
+body
+    div(id='alertHolder')
+        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
+            span(v-html="alertText")
+    div(id="vueel" style="padding:20px;display:none;")
+        menu-page
+        b-row.mb-2
+            .col-12
+                b-button(variant="default mr-2",@click="beforeAdd") Add
+                b-list-group(class="overflow-auto", style="height:85vh;")
+                    b-list-group-item
+                        div(id="images_document",class="row bpa-loading")
+                           file-upload(:id="'file_document'",:index="1",:build-upload="buildUpload",:type-detail="'detail1'",:height="'81vh'")
+        b-modal(v-model="modal.showModal",modal-class="modal-fullscreen modal-dialog-scrollable",centered="",title="'kiểm tra dữ liệu'",size="xl",@close="modal.showModal = false")
+            .row
+                .col-md-12
+                    .row
+                        .col-md-4
+                            b-form-group(label-size="sm",label="Số hóa đơn:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(size="sm",v-model="modal.dataModal.so_hoa_don")
+                        .col-md-4
+                            b-form-group(label-size="sm",label="Số phiếu thu:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(size="sm",v-model="modal.dataModal.so_phieu_thu")
+                        .col-md-4
+                            b-form-group(label="Ngày Hóa Đơn:",label-size="sm",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(v-model='modal.dataModal.ngay_hoa_don',size="sm",type='date')
+                        .col-md-4
+                            b-form-group(label-size="sm",label="Tên Khách Hàng:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(size="sm",v-model="modal.dataModal.ten_khach_hang")
+                        .col-md-4
+                            b-form-group(label-size="sm",label="Người Liên hệ:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(size="sm",v-model="modal.dataModal.nguoi_lien_he")
+                        .col-md-4
+                            b-form-group(label-size="sm",label="Số Điện thoại:",label-cols-sm="3",label-align-sm="right")
+                                b-form-input(size="sm",v-model="modal.dataModal.so_dien_thoai")
+                        .col-md-12
+                            b-form-group(label-size="sm",label="Địa Chỉ Giao Hàng:",label-cols-sm="1",label-align-sm="right")
+                                b-form-input(size="sm",v-model="modal.dataModal.dia_chi_giao_hang")
+                    .m-2.bg-light.p-2
+                        .row
+                            b-button(variant="primary mr-2",@click="beforeAddItem") Add
+                        .row.mt-2
+                            .col-md-1
+                                b-form-group(label-size="sm",label="Stt",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-2
+                                b-form-group(label-size="sm",label="Mã",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-3
+                                b-form-group(label-size="sm",label="Tên",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-1
+                                b-form-group(label-size="sm",label="Đvt",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-1
+                                b-form-group(label-size="sm",label="Số lượng",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-1
+                                b-form-group(label-size="sm",label="Đơn giá",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-2
+                                b-form-group(label-size="sm",label="Thành tiền",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                            .col-md-1
+                                b-form-group(label-size="sm",label="Action",label-cols-sm="12",label-class="text-center",label-align-sm="center")
+                        
+                        .row(v-for="(row, index) in modal.dataModal.rows")
+                            .col-md-1
+                                b-form-input(size="sm",v-model="row.stt")
+                            .col-md-2
+                                b-form-input(size="sm",v-model="row.ma_sp")
+                            .col-md-3
+                                b-form-input(size="sm",v-model="row.ten_sp")
+                            .col-md-1
+                                b-form-input(size="sm",v-model="row.dvt")
+                            .col-md-1
+                                b-form-input(size="sm",v-model="row.sl")
+                            .col-md-1
+                                my-currency-input(size="sm",v-model="row.don_gia")
+                            .col-md-2
+                                my-currency-input(size="sm",v-model="row.thanh_tien")
+                            .col-md-1(class="text-center")
+                                b-button(variant="danger ml-2",@click="runDeleteItem(index)") Delete
+                        .row.mt-2
+                            .col-md-6
+                            .col-md-6
+                                .mt-2.p-2
+                                    .row.m-2
+                                        .col-md-12
+                                            b-form-group(label-size="sm",label="tổng số lượng:",label-cols-sm="6",label-align-sm="right")
+                                                my-currency-input(size="sm",v-model="modal.dataModal.tong_so_luong")
+                                    .row.m-2
+                                        .col-md-12
+                                            b-form-group(label-size="sm",label="phi giao hàng:",label-cols-sm="6",label-align-sm="right")
+                                                my-currency-input(size="sm",v-model="modal.dataModal.phi_giao_hang")
+                                    .row.m-2
+                                        .col-md-12
+                                            b-form-group(label-size="sm",label="chiết khấu:",label-cols-sm="6",label-align-sm="right")
+                                                my-currency-input(size="sm",v-model="modal.dataModal.chiet_khau")
+                                    .row.m-2
+                                        .col-md-12
+                                            b-form-group(label-size="sm",label="tổng tiền:",label-cols-sm="6",label-align-sm="right")
+                                                my-currency-input(size="sm",v-model="modal.dataModal.tong_tien")
+                                    .row.m-2
+                                        .col-md-12
+                                            b-form-group(label-size="sm",label="khách phải trả:",label-cols-sm="6",label-align-sm="right")
+                                                my-currency-input(size="sm",v-model="modal.dataModal.khach_phai_tra")
+            div(slot="modal-footer")
+                b-button(variant="default mr-2",@click="runCancel") Cancel
+                b-button(variant="primary mr-2",@click="runCreate($event)") Create file PDF              
+script(type="text/javascript",src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+script(type="text/javascript",src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js")
+script(type="text/javascript",src="./js/bootstrap.js")
+script(src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js")
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js')
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js')
+script(type="text/javascript", src="js/mainExcel.js")
+include ./fileUpload
+include ./menu
+script("text/javascript").
+    if (document.getElementById('vueel')) {
+        document.getElementById('vueel').style = 'display:block;';
+    }
