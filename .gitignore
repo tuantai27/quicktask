@@ -3,6 +3,10 @@ config_frontend.old.js
 certs/*
 site/client/css/*
 salary/files/*
+client/files/*
+client/js/dataMain copy.js
+client/js/dataMain_bk.js
+client/temporary/*
 salary/files_done/*
 nbproject/private/*
 node_modules/*
