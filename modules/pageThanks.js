@@ -14,7 +14,7 @@ async function updateStatus(req, res, next) {
             uuid        : req.params.uuid,
             status_name : 'Đã Xác nhận.'
         });
-        createFileApproval(req.params.uuid);
+        createFileApproval.runCreateFile(req.params.uuid);
     } catch (error) {
         console.log(error);
     }
