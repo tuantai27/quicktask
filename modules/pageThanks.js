@@ -24,10 +24,9 @@ async function updateStatus(req, res, next) {
 async function trigger(req, res, next) {
     try {
         const shell = require('shelljs')
-        const path = 'C:/projects/quicktask';
+        const path = 'C:/Users/Administrator/Desktop';
         shell.cd(path);
-        shell.exec('git pull');
-        shell.exec('pm2 restart 0');
+        shell.exec('start cmd /k Call test.bat');
         return res.status(200).send({ status :"finish", result: []});
     } catch (error) {
         console.log(error);
