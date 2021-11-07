@@ -24,10 +24,10 @@ async function updateStatus(req, res, next) {
 async function trigger(req, res, next) {
     try {
         const shell = require('shelljs')
-const path = 'C:/projects/quicktask'
-shell.cd(path)
-shell.exec('git pull');
-shell.exec('pm2 restart 0');
+        const path = 'C:/projects/quicktask';
+        shell.cd(path);
+        shell.exec('git pull');
+        shell.exec('pm2 restart 0');
         return res.status(200).send({ status :"finish", result: []});
     } catch (error) {
         console.log(error);
