@@ -63,6 +63,7 @@ app.use(session({
         pageExcel.init(browser);
         app.use('/', login.router);
         app.use('/thanks', pageThanks.router);
+        app.use('/thanks2', pageThanks.router);
         app.use('/form', [login.checkAuth, pageForm.router]);
         app.use('/replySalary', pageReply.router);
         app.use('/salary', [login.checkAuth, pageSalary.router]);
