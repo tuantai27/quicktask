@@ -23,11 +23,13 @@ async function updateStatus(req, res, next) {
 
 async function trigger(req, res, next) {
     try {
-        const shell = require('shelljs')
+        
+	const shell = require('shelljs')
         const path = 'C:/Users/Administrator/Desktop';
         shell.cd(path);
-        shell.exec('start cmd /k Call test.bat');
-        return res.status(200).send({ status :"finish", result: []});
+        let process = shell.exec('start cmd /k Call test.bat',{ async: true });
+//	process.kill('SIGINT');
+        return res.status(200).send({ status :"start", result: []});
     } catch (error) {
         console.log(error);
         return res.status(200).send({ status :"finish", result: error});
