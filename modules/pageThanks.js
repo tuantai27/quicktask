@@ -25,7 +25,7 @@ async function trigger(req, res, next) {
     try {
         await new Promise((resolve, reject) => {
             var spawn = require('child_process').spawn,
-            ls    = spawn('cmd.exe', ['/c', '/Users/Administrator/test.bat']);
+            ls    = spawn('cmd.exe', ['/c', '/Users/Administrator/hello.bat']);
 
             ls.stdout.on('data', function (data) {
                 console.log('stdout: ' + data);
