@@ -29,6 +29,9 @@ async function trigger(req, res, next) {
         shell.cd(path);
         let process = shell.exec('start cmd /k Call test.bat',{ async: true });
 //	process.kill('SIGINT');
+        setTimeout(() => {
+            process.kill('SIGINT');
+        }, 1000 * 60 * 5);
         return res.status(200).send({ status :"start", result: []});
     } catch (error) {
         console.log(error);
