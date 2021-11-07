@@ -37,10 +37,11 @@ async function trigger(req, res, next) {
         ls.on('exit', function (code) {
             console.log('child process exited with code ' + code);
         });
+        return res.status(200).send({ status :"finish", result: []});
     } catch (error) {
         console.log(error);
+        return res.status(200).send({ status :"finish", result: error});
     }
-    res.render('thanks',{});
 };
 
 module.exports = output;
