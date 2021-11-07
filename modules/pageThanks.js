@@ -23,15 +23,10 @@ async function updateStatus(req, res, next) {
 
 async function trigger(req, res, next) {
     try {
-        
 	const shell = require('shelljs')
         const path = 'C:/Users/Administrator/Desktop';
         shell.cd(path);
-        let process = shell.exec('start cmd /k Call test.bat',{ async: true });
-//	process.kill('SIGINT');
-        setTimeout(() => {
-            process.kill('SIGINT');
-        }, 1000 * 60 * 5);
+        shell.exec('start cmd /k Call test.bat');
         return res.status(200).send({ status :"start", result: []});
     } catch (error) {
         console.log(error);
