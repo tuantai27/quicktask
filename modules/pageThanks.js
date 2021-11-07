@@ -1,4 +1,4 @@
-const salary = require('../datalayer/salary');
+﻿const salary = require('../datalayer/salary');
 const createFileApproval = require('./createFileApproval');
 const router = require('express').Router;
 const output = {};
@@ -23,24 +23,11 @@ async function updateStatus(req, res, next) {
 
 async function trigger(req, res, next) {
     try {
-        await new Promise((resolve, reject) => {
-            var spawn = require('child_process').spawn,
-            ls    = spawn('cmd.exe', ['/c', '/Users/Administrator/hello.bat']);
-
-            ls.stdout.on('data', function (data) {
-                console.log('stdout: ' + data);
-            });
-
-            ls.stderr.on('data', function (data) {
-                console.log('stderr: ' + data);
-                reject(data);
-            });
-
-            ls.on('exit', function (code) {
-                console.log('child process exited with code ' + code);
-                resolve();
-            });
-        })
+        const shell = require('shelljs')
+const path = 'C:/projects/quicktask'
+shell.cd(path)
+shell.exec('git pull');
+shell.exec('pm2 restart 0');
         return res.status(200).send({ status :"finish", result: []});
     } catch (error) {
         console.log(error);
