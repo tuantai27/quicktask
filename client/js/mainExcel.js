@@ -224,16 +224,6 @@ Vue.component('my-currency-input', {
                 return false;
             }
         },
-        getIndexByUUID (row) {
-            const table = vueApp.$data.configs.rows;
-            for (let i = 0; i < table.length; i++) {
-                const element = table[i];
-                if (element.uuid == row.uuid) {
-                    return i;
-                }
-            }
-            return -1;
-        },
         makeToast(variant = null, msg) {
             let title = 'Thông báo';
             
@@ -330,20 +320,6 @@ Vue.component('my-currency-input', {
             components:{},
             el:'#vueel',
             data:{
-                forms:{
-                    isLoading: false,
-                    loadingMsg: ''
-                },
-                configs: {
-                    fieldsRows : [],
-                    rows2 : [],
-                    rows: [],
-                    configInfo: {team:[]},
-                    configInfoTeam: '',
-                    configInfoFolder: '',
-                    configInfoFolderDisable: false,
-                    configInfoSubFolder:''
-                },
                 modal: {
                     countDown:0,
                     alertText:'',
@@ -351,12 +327,7 @@ Vue.component('my-currency-input', {
                     showModal:false,
                     dataModal:{},
                     saveCurrentPage : []
-                },
-                search : {
                 }
-            },
-            mounted () {
-                
             },
             methods:methods
         });
