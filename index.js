@@ -21,6 +21,11 @@ const config            = require('./config');
 const redisClient         = redis.createClient();
 fileSalary.init();
 const app               = express();
+//your customer id
+//626683710952-gfee53t87a1tkekr9hbhngvbbkg17os7.apps.googleusercontent.com
+//client secret code
+//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
+//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
 
 app.set('view engine','pug');
 app.set('views',path.join(__dirname,'client','views'));
@@ -30,16 +35,15 @@ app.use('*/js',express.static(path.join(__dirname,'client','js/')));
 // app.use('*/.well-known/pki-validation/5D821F1269D79B26C3984DC20FE3B504.txt',express.static(path.join(__dirname,'client','js/5D821F1269D79B26C3984DC20FE3B504.txt')));
 // app.use(express.static('wellknown'))
 app.use('*/files',express.static(path.join(__dirname,'client','files/')));
+app.use('*/google7b9d95b05c8dfc6e.html',express.static(path.join(__dirname,'google7b9d95b05c8dfc6e.html')));
 app.use('*/temporary',express.static(path.join(__dirname,'client','temporary/')));
 const port = process.env.PORT || 3000;
 // const port = 8080;
 app.use('*/css',express.static(path.join(__dirname,'client','css/')));
 app.use('/favicon.ico',express.static(path.join(__dirname,'client/favicon.ico')));
-
 redisClient.on('error',(err)=>{
     console.log('REDIS rate limiter had error %o',err,{error:err});
 });
-
 const mStore = new redisStore({client : redisClient, ttl: config.SESSION_TIMEOUT / 1000, disableTouch: true});
 app.use(session({
     store : mStore,
