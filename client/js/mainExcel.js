@@ -78,7 +78,7 @@ Vue.component('my-currency-input', {
         },
         beforeAddItem() {
            vueApp.modal.dataModal.rows.push({
-                    stt : 1,
+                    stt : vueApp.modal.dataModal.rows.length + 1,
                     ma_sp : "",
                     ten_sp : "",
                     dvt : "",
@@ -137,7 +137,7 @@ Vue.component('my-currency-input', {
                 success:function(data,status,req){
                     if (data.status === "finish" && data.result) {
                         console.log(data.result);
-                        vueApp.modal.dataModal.title = "kiểm tra dữ liệu";
+                        vueApp.modal.dataModal.title = "Kiểm Tra Dữ Liệu";
                         vueApp.modal.dataModal = data.result;
                         vueApp.modal.showModal = true;
                         
@@ -273,6 +273,7 @@ Vue.component('my-currency-input', {
         runCreate () {
             const formData = vueApp.$data.modal.dataModal;
             console.log(formData);
+            vueApp.$data.modal.show = true; 
             $.ajax({
                 url: `/excel/createFile?bodyData=${JSON.stringify(formData)}`,
                 method: 'POST',
@@ -282,6 +283,7 @@ Vue.component('my-currency-input', {
                 processData: false,
                 timeout: 60000,
                 success:function(data,status,req){
+                    vueApp.$data.modal.show = false; 
                     if (data.status === "finish" && data.result) {
                         console.log(data.result);
                         vueApp.downloadFile(data.result);
@@ -291,6 +293,7 @@ Vue.component('my-currency-input', {
                     }
                 },
                 error:function(data) {
+                    vueApp.$data.modal.show = false; 
                     console.log(data);
                 }
             });
@@ -325,7 +328,45 @@ Vue.component('my-currency-input', {
                     alertText:'',
                     variant:'danger',
                     showModal:false,
+                    show:false,
                     dataModal:{},
+                    fields : [
+                        {
+                            key: 'stt',
+                            label: 'Stt',
+                        },
+                        {
+                            key: 'ma_sp',
+                            label: 'Mã',
+                        }
+                        ,
+                        {
+                            key: 'ten_sp',
+                            label: 'Tên',
+                        }
+                        ,
+                        {
+                            key: 'dvt',
+                            label: 'Đvt',
+                        }
+                        ,
+                        {
+                            key: 'sl',
+                            label: 'Số lượng',
+                        },
+                        {
+                            key: 'don_gia',
+                            label: 'Đơn giá',
+                        },
+                        {
+                            key: 'thanh_tien',
+                            label: 'Thành tiền',
+                        },
+                        {
+                            key: 'action',
+                            label: 'Action',
+                        }
+                    ],
                     saveCurrentPage : []
                 }
             },
