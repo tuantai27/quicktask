@@ -23,55 +23,6 @@
             console.error('gapi didn\'t load');
         }
     };
-    const methods = {
-        getText() {
-            return 'Đăng Nhập';
-        },
-        actionLogin () {
-            $.ajax({
-                url: `/set_session`,
-                method: 'POST',
-                data : vueApp.$data,
-                success:function(data,status,req){
-                    if (data.status === "success") {
-                        console.log(data);
-                        setTimeout(() => {
-                            window.location.href = './excel'; 
-                        }, 500);
-
-                    } else {
-                        alert(`invalid.`);
-                    }
-                },
-                error:function(data) {
-                    console.log(data);
-                }
-            });
-        }
-    };
-    setTimeout(() => {
-        vueApp = new Vue({
-            components:{
-            },
-            el:'#vueel',
-            data:{
-                passWord    : '',
-                userName    : ''
-            },
-            created : () => {
-                
-            },
-            mounted : () => {
-                console.log('heelo');
-                let count = 1;
-                loadgapi(1);
-    
-
-            },
-            methods:methods
-        });
-        
-    }, 1000);
 })();
 
 
@@ -80,6 +31,18 @@ window.onSignIn = (function(){
      * this closure handles all google related signing in and out
      * and finaly returns the function to authorize a sign in to global scope.
      */
+    
+	var fullHeight = function() {
+
+		$('.js-fullheight').css('height', $(window).height());
+		$(window).resize(function(){
+			$('.js-fullheight').css('height', $(window).height());
+		});
+
+	};
+	fullHeight();
+
+	
     let auth2 = null;
     let m_google_user = null;
     function loadgapi(times) {

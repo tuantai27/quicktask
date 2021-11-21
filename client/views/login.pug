@@ -6,21 +6,26 @@ meta(name="google-signin-client_id",content="539765149554-k6b9apfbfgk2uancrgevrr
 link(rel="stylesheet",type="text/css",href="./css/shared.css")
 link(rel="stylesheet",type="text/css",href="./css/bootstrap-vue.css")
 link(rel="stylesheet",type="text/css",href="/css/index.css")
-body
-    div(id="sign_in", class="g-signin2" data-onsuccess="onSignIn")
-    div(id='alertHolder')
-        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
-            span(v-html="alertText")
-    .d-flex.justify-content-center.align-items-center(id="vueel", style="margin-top:10%;")
-        .col-md-3
-            b-card(title="Business Process Automation")
-                b-form
-                    b-form-group(label="Email",label-cols-sm="3",label-align-sm="right")
-                        b-form-input(,v-model="userName")
-                    b-form-group(label="Password",label-cols-sm="3",label-align-sm="right")
-                        b-form-input(type="password",v-model="passWord")
-                    b-form-group(label="",label-cols-sm="3",label-align-sm="right")
-                        b-button(variant='primary' @click="actionLogin" v-html="getText()") 
+link(href='https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap' rel='stylesheet')
+link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+link(rel='stylesheet' href='./css/style.css')
+body(class="img js-fullheight",style="background-image: url(css/bg.jpg);")
+    section.ftco-section
+        .container
+            .row.justify-content-center
+                .col-md-6.text-center.mb-5
+                    h2.heading-section
+                        | Login to 
+                        span(style='color:red') Q
+                        | uick 
+                        span(style='color:blue') T
+                        | ask
+            .row.justify-content-center
+                .col-md-6.col-lg-4
+                    .login-wrap.p-0
+                        h3.mb-4.text-center Have an account?
+            .row.justify-content-center
+                div(id="sign_in", class="g-signin2" data-onsuccess="onSignIn")
                     
 script(type="text/javascript",src="https://apis.google.com/js/platform.js",async,defer)
 script(type="text/javascript",src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
