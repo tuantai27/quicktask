@@ -53,7 +53,7 @@ app.use(session({
         clearDisk.setScheduleClear();
         login.init(config);
         //import data;
-        const m_db = new database();
+        const m_db = new database(config);
         users.init(m_db);
         salary.init(m_db);
         pageDatalayer.init(m_db);
