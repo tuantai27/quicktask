@@ -9,6 +9,21 @@ out.init = (db, schemas = 'system_user') => {
     out.schemas = schemas;
 }
 
+out.checkUserEmail = async (email) => {
+    const sql = [];
+    const params = [];
+
+    sql.push(`select   *`);
+    sql.push(`from      ${out.schemas}.users`);
+    sql.push(`where     email = ?`);
+
+    params.push(email);
+
+    const result = await out.db.query(sql.join(' '), params);
+
+    return result[0] || {};
+}
+
 out.checkUser = async (email, password) => {
     const sql = [];
     const params = [];
