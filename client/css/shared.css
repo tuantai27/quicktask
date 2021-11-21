@@ -13620,7 +13620,7 @@ table.vgt-table tr.clickable:hover {
 }
 
 .navbar .navbar-toggler {
-  margin-left: auto;
+  /* margin-left: auto; */
   margin-right: 10px;
 }
 
