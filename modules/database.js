@@ -1,13 +1,13 @@
 const mysql = require('mysql2');
 
 class database {    
-    constructor() {  
+    constructor(config) {  
         this.connection = mysql.createConnection({
-            host        : 'localhost',
-            user        : 'root',
-            port        : 3306,
-            password    : "tuanT@I4567",
-            database    : 'quicktask'
+            host        : config.MYSQL_DB.host,
+            user        : config.MYSQL_DB.user,
+            port        : config.MYSQL_DB.port,
+            password    : config.MYSQL_DB.passWord,
+            database    : config.MYSQL_DB.database
         });
     }
     query(sql, params) {
