@@ -18,14 +18,9 @@ const pageExcel         = require('./modules/pageExcel');
 const pageReply         = require('./modules/pageReply');
 const clearDisk         = require('./modules/clear_disk');
 const config            = require('./config');
-const redisClient         = redis.createClient();
+const redisClient       = redis.createClient();
 fileSalary.init();
 const app               = express();
-//your customer id
-//626683710952-gfee53t87a1tkekr9hbhngvbbkg17os7.apps.googleusercontent.com
-//client secret code
-//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
-//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
 
 app.set('view engine','pug');
 app.set('views',path.join(__dirname,'client','views'));
@@ -56,6 +51,7 @@ app.use(session({
 (async ()=>{
     try {
         clearDisk.setScheduleClear();
+        login.init(config);
         //import data;
         const m_db = new database();
         users.init(m_db);
@@ -66,12 +62,14 @@ app.use(session({
             '--disable-web-security', '--disable-dev-profile']});
         pageExcel.init(browser);
         app.use('/', login.router);
-        app.use('/thanks', pageThanks.router);        
+        app.use('/thanks', pageThanks.router);
+        app.post('/token', login.checkToken);        
         app.use('/trigger',  [login.checkAuth, pageThanks.router2]);
         app.use('/form', [login.checkAuth, pageForm.router]);
         app.use('/replySalary', pageReply.router);
         app.use('/salary', [login.checkAuth, pageSalary.router]);
         app.use('/excel', [login.checkAuth, pageExcel.router]);
+        app.use('/home', [login.checkAuth, pageExcel.router]);
         app.use('/datalayer', [login.checkAuth, pageDatalayer.router]);
         app.post('/uploadfile', [login.checkAuth, file.uploadFile]);
         app.get('/deleteFile/:file_id', [login.checkAuth, file.deleteFile]);
