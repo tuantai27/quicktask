@@ -334,37 +334,45 @@ Vue.component('my-currency-input', {
                         {
                             key: 'stt',
                             label: 'Stt',
+                            class: 'text-center'
                         },
                         {
                             key: 'ma_sp',
                             label: 'Mã',
+                            class: 'text-center'
                         }
                         ,
                         {
                             key: 'ten_sp',
                             label: 'Tên',
+                            class: 'text-center'
                         }
                         ,
                         {
                             key: 'dvt',
                             label: 'Đvt',
+                            class: 'text-center'
                         }
                         ,
                         {
                             key: 'sl',
                             label: 'Số lượng',
+                            class: 'text-center'
                         },
                         {
                             key: 'don_gia',
                             label: 'Đơn giá',
+                            class: 'text-center'
                         },
                         {
                             key: 'thanh_tien',
                             label: 'Thành tiền',
+                            class: 'text-center'
                         },
                         {
                             key: 'action',
                             label: 'Action',
+                            class: 'text-center'
                         }
                     ],
                     saveCurrentPage : []
