@@ -1,0 +1,345 @@
+doctype html
+title Quản lý Nhân Sự
+meta(charset="UTF-8")
+meta(name="viewport",content="width=device-width, initial-scale=1, shrink-to-fit=no")
+link(rel="stylesheet",type="text/css",href="/css/shared.css")
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js')
+
+link(rel="stylesheet",type="text/css",href="/css/bootstrap-vue.css")
+link(rel="stylesheet",type="text/css",href="/css/vue-good-table.min.css")
+link(rel="stylesheet",type="text/css",href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.6/viewer.min.css")
+link(rel="stylesheet",href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+link(rel="stylesheet",href="https://cdn.jsdelivr.net/npm/pc-bootstrap4-datetimepicker@4.17/build/css/bootstrap-datetimepicker.min.css" )
+ 
+link(rel="stylesheet",type="text/css",href="/css/index.css")
+body
+    div(id='alertHolder')
+        b-alert(v-bind:variant="type", :show="countDown", fade, dismissible, @dismissed="countDown=0")
+            span(v-html="alertText")
+    div(id="vueel" style="display:none;")
+        menu-page
+        b-alert.position-fixed(v-model='modal.countDown' style='z-index: 2000; width:50%; top: 25%;left: 50%;margin-right: -50%;transform: translate(-50%, -50%);', :variant='modal.variant', :fade='true', dismissible='', @dismissed="modal.countDown=0",v-html="modal.alertText")
+        b-modal(v-model="modal.showModal",centered="",:title="modal.dataModal.title",size="xl",@close="modal.showModal = false")
+            b-card(no-body='')
+                b-tabs(card='')
+                    b-tab(title='Thông Tin Cá Nhân' active='')
+                        .row
+                            .col-md-4
+                                b-form-group(label="Họ Tên:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.worker_name")
+                            .col-md-4
+                                b-form-group(label="Số CMND:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.cmnd")
+                            .col-md-4
+                                b-form-group(label="Tên Công Ty:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-select(v-model="modal.dataModal.company_name",:options="getOptions('company')")
+                        .row
+                            .col-md-4
+                                b-form-group(label="Giới Tính:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-select(v-model="modal.dataModal.sex",:options="getOptions('sex')")
+                            .col-md-4
+                                b-form-group(label="Chức Danh:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.chuc_danh")
+                            .col-md-4
+                                b-form-group(label="Mã Số Thuế:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.mst")
+                        .row
+                            .col-md-4
+                                b-form-group(label="Email Công Ty:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.email_cong_ty")
+                            .col-md-4
+                                b-form-group(label="Email Cá Nhân:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.email_ca_nhan")
+                            .col-md-4
+                                b-form-group(label="Ngày Sinh:",label-cols-sm="3",label-align-sm="right")
+                                    b-input-group
+                                        b-form-input#ngay-sinh-input(v-model='modal.dataModal.ngay_sinh' type='text' placeholder='YYYY-MM-DD' autocomplete='off')
+                                        b-input-group-append
+                                            b-form-datepicker(v-model='modal.dataModal.ngay_sinh' button-only='' right='' locale='en-US' aria-controls='ngay-sinh-input')
+                        .row
+                            .col-md-4
+                                b-form-group(label="Nguyên Quán:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.nguyen_quan")
+                            .col-md-4
+                                b-form-group(label="Trình Độ:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.trinh_do")
+                            .col-md-4
+                                b-form-group(label="ĐC thường trú:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.dc_thuong_tru")
+                        .row
+                            .col-md-4
+                                b-form-group(label="ĐC hiện tại:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.dc_hien_tai")
+                            .col-md-4
+                                b-form-group(label="Ngày cấp :",label-cols-sm="3",label-align-sm="right")
+                                    b-input-group
+                                        b-form-input#ngay-cap-input(v-model='modal.dataModal.ngay_cap' type='text' placeholder='YYYY-MM-DD' autocomplete='off')
+                                        b-input-group-append
+                                            b-form-datepicker(v-model='modal.dataModal.ngay_cap' button-only='' right='' locale='en-US' aria-controls='ngay-cap-input' )
+                            .col-md-4
+                                b-form-group(label="Nơi cấp:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.noi_cap")
+                        .row
+                            .col-md-4
+                                b-form-group(label="Chi cục Thuế:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.chi_cuc_thue")
+                            .col-md-4
+                                b-form-group(label="Sổ BHXH:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.so_bhxh")
+                            .col-md-4
+                                b-form-group(label="Thẻ BHYT:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.the_bhyt")
+                        .row
+                            .col-md-4
+                                b-form-group(label="Bệnh Viên:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.benh_vien")
+                            .col-md-4
+                                b-form-group(label="Số tài khoản:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.so_tai_khoan")
+                            .col-md-4
+                                b-form-group(label="Ngân hàng:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.ngan_hang")
+                        .row
+                            .col-md-4
+                                b-form-group(label="SĐT công ty:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.sdt_cong_ty")
+                            .col-md-4
+                                b-form-group(label="SĐT cá nhân:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.sdt_ca_nhan")
+                            .col-md-4
+                                b-form-group(label="Số máy nhánh:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-input(v-model="modal.dataModal.so_may_nhanh")
+                        .row
+                            .col-md-4
+                                b-form-group(label="Nơi làm việc:",label-cols-sm="3",label-align-sm="right")
+                                    b-form-select(v-model="modal.dataModal.noi_lam_viec",:options=[{value:'kho',text:"Kho"},{value:'van_phong',text:"Văn Phòng"}])
+                        
+                    b-tab(title='Hợp Đồng Lao Động')
+                        .row
+                            b-button.mr-2(size='sm',variant="primary ml-2 mb-2", @click='addRow')
+                                | thêm hợp đồng
+                        .row
+                            b-table(
+                                v-if="modal.dataModal.detail1 && modal.dataModal.detail1.length",
+                                :items='modal.dataModal.detail1',
+                                :fields='configs.fieldsHD',
+                                striped='',
+                                sticky-header="",
+                                head-variant="light",
+                                class="table_custom_height"
+                            )
+                                template(#cell(active)='row')
+                                    b-form-checkbox(switch="", size="lg", v-model="row.item.active",type="number",@change="changeActive(row.item, row.index)")
+                                template(#cell(day_from)='row')
+                                    date-picker(v-model="row.item.day_from",:config="{format: 'DD-MM-YYYY'}")
+                                template(#cell(day_to)='row')
+                                    date-picker(v-model="row.item.day_to",:config="{format: 'DD-MM-YYYY'}")
+                                template(#cell(luong)='row')
+                                    my-currency-input(v-model="row.item.luong")
+                                template(#cell(soHD)='row')
+                                    b-form-input(v-model="row.item.soHD")
+                                template(#cell(type)='row')
+                                    b-form-select(v-model="row.item.type",:options="getOptions('status')")
+                                template(#cell(actions)='row')
+                                    b-button.mr-2(size='sm'  @click='clickDetail(row)')
+                                        | {{ row.detailsShowing ? &apos;Hide&apos; : &apos;Show&apos;}} Details
+                                    b-button(variant="danger mr-2",@click="runDeleteHopDong($event, row.index)") Delete
+                                template(#row-details='row')
+                                    b-card
+                                        b-row.mb-2
+                                            .col-md-6
+                                                b-form-group(label="Phụ Cấp Xăng Xe:",label-cols-sm="3",label-align-sm="right")
+                                                    my-currency-input(v-model="row.item.pc_xang_xe")
+                                            .col-md-6
+                                                b-form-group(label="Phụ Cấp Điện Thoại:",label-cols-sm="3",label-align-sm="right")
+                                                    my-currency-input(v-model="row.item.pc_dien_thoai")
+                                        b-row.mb-2
+                                            .col-md-6
+                                                b-form-group(label="Tình Trang HDLĐ:",label-cols-sm="3",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.tinh_thang_hdld")
+                                            .col-md-6
+                                                b-form-group(label="Ghi Chú:",label-cols-sm="3",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.ghi_chu")
+                                        b-row.mb-2
+                                            .col-12
+                                                b-list-group(class="overflow-auto", style="max-height:323px;")
+                                                    b-list-group-item
+                                                        div(id="images_document",class="row bpa-loading")
+                                                            .col-1(v-for="file in row.item.filesInfo")
+                                                                div(v-if="file.id == 0", class="col",style="height:100px;margin:0px;")
+                                                                div(v-else="",class="container_file",style="height:100px;margin:0px;")
+                                                                    div(v-if="getIcon(file.file_name)", class="icon-file img-thumbnail")
+                                                                        i(:class="getIcon(file.file_name)")
+                                                                        small(class="text-uppercase d-block text-truncate") {{ file.file_name }}
+                                                                    div(v-else="")
+                                                                        b-img(thumbnail,fluid,:src="'../files/' + file.id",:class="'image_file ' + file.file_id")
+                                                                    div(class="middle_file")
+                                                                        a(class="fa fa-cloud-download",title="Download",@click="downloadFile(file.id, file.file_name)")
+                                                                        a(class="fa fa-times",style="color: red !important;",title="Delete",@click="removeFile(file.id, 'detail1')")
+                                                            .col-1
+                                                                file-upload(:id="'file_document'",:index="row.index",:build-upload="buildUpload",:type-detail="'detail1'")
+                    b-tab(title='Người phụ thuộc')
+                        .row
+                            b-button.mr-2(size='sm',variant="primary ml-2 mb-2", @click='addRowNguoiPhuThuoc')
+                                | thêm người phụ thuộc
+                        .row
+                            b-table(:items='modal.dataModal.detail2',:fields='configs.fieldsNguoiPhuThuoc' striped='',sticky-header="", head-variant="light",class="table_custom_height")
+                                template(#cell(active)='row')
+                                        b-form-checkbox(switch="", size="lg", v-model="row.item.active",type="number")
+                                template(#cell(name)='row')
+                                    b-form-input(v-model="row.item.name")
+                                template(#cell(cmnd)='row')
+                                    b-form-input(v-model="row.item.cmnd")
+                                template(#cell(ngay_sinh)='row')
+                                    date-picker(v-model="row.item.ngay_sinh",:config="{format: 'DD-MM-YYYY'}")
+                                template(#cell(quoc_tich)='row')
+                                    b-form-input(v-model="row.item.quoc_tich")
+                                template(#cell(quan_he)='row')
+                                    b-form-input(v-model="row.item.quan_he")
+                                template(#cell(mst)='row')
+                                    b-form-input(v-model="row.item.mst")
+                                template(#cell(note)='row')
+                                    b-form-input(v-model="row.item.note")
+                                template(#cell(month_from)='row')
+                                    date-picker(v-model="row.item.month_from",:config="{format: 'DD-MM-YYYY'}")
+                                template(#cell(show_details)='row')
+                                    b-button.mr-2(size='sm' @click='clickDetail(row)')
+                                        | {{ row.detailsShowing ? &apos;Hide&apos; : &apos;Show&apos;}} Details
+                                template(#row-details='row')
+                                    b-card
+                                        b-row.mb-2
+                                            .col-md-1
+                                                b-form-group(label="Sổ:",label-cols-sm="3",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.so")
+                                            .col-md-2
+                                                b-form-group(label="Quyển số:",label-cols-sm="5",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.quyen")
+                                            .col-md-2
+                                                b-form-group(label="Quốc gia:",label-cols-sm="4",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.quoc_gia")
+                                            .col-md-3
+                                                b-form-group(label="Tỉnh / Thành phố:",label-cols-sm="5",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.tinh_thanh_pho")
+                                            .col-md-2                                   
+                                                b-form-group(label="Quận / Huyện:",label-cols-sm="6",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.quan_huyen")
+                                            .col-md-2                                       
+                                                b-form-group(label="Phường / Xã:",label-cols-sm="6",label-align-sm="right")
+                                                    b-form-input(v-model="row.item.phuong_xa")
+                                        b-row.mb-2
+                                            .col-12
+                                                b-list-group(class="overflow-auto", style="max-height:323px;")
+                                                    b-list-group-item
+                                                        div(id="images_document",class="row bpa-loading")
+                                                            .col-1(v-for="file in row.item.filesInfo")
+                                                                div(v-if="file.id == 0", class="col",style="height:100px;margin:0px;")
+                                                                div(v-else="",class="container_file")
+                                                                    div(v-if="getIcon(file.file_name)", class="icon-file img-thumbnail")
+                                                                        i(:class="getIcon(file.file_name)")
+                                                                        small(class="text-uppercase d-block text-truncate") {{ file.file_name }}
+                                                                    div(v-else="")
+                                                                        b-img(thumbnail,fluid,:src="'../files/' + file.id",:class="'image_file ' + file.file_id")
+                                                                    div(class="middle_file")
+                                                                        a(class="fa fa-cloud-download",title="Download",@click="downloadFile(file.id, file.file_name)")
+                                                                        a(class="fa fa-times",style="color: red !important;",title="Delete",@click="removeFile(file.id, 'detail2')")
+                                                            .col-1
+                                                                file-upload(:id="'file_document_22'",:index="row.index",:build-upload="buildUpload",:type-detail="'detail2'")
+                    b-tab(title='Gởi Email')
+                        .row
+                            .col-md-4
+                                b-button(variant="warning mt-2") Gởi Email Ký Hợp Đồng
+                        .row
+                            .col-md-4
+                                b-button(variant="secondary mt-2") Gởi Email Sao Kê Lương
+            div(slot="modal-footer")
+                b-button(variant="default mr-2",@click="runCancel") Cancel
+                span(v-if="modal.dataModal.action == 'add' ||  modal.dataModal.action == 'duplicate'")
+                    b-button(variant="primary mr-2",@click="runAddData($event)") Add
+                span(v-else-if="modal.dataModal.action == 'edit'")
+                    b-button(variant="secondary mr-2",@click="runEdit($event)") Edit
+        .row
+            .col
+                h1(style="text-align:center") Quản Lý Permission
+        .row
+            .col-md-1
+                b-button(variant="primary",@click="addData") Add
+            .col-md-2
+                b-form-group(label="Công Ty:",label-cols-sm="3",label-align-sm="right")
+                    b-form-select(:options="getOptions('company')",v-model="search.company_name",@change="onSearch")
+            .col-md-2
+                b-form-group(label="Ngày Từ:",label-cols-sm="4",label-align-sm="right")
+                    b-input-group
+                        date-picker(v-model="search.day_from",:config="{format: 'DD-MM-YYYY'}",@dp-change="onSearch")
+            .col-2
+                b-form-group(label="Ngày Đến:",label-cols-sm="4",label-align-sm="right")
+                    b-input-group
+                        date-picker(v-model="search.day_to",:config="{format: 'DD-MM-YYYY'}",@dp-change="onSearch")
+            .col-md-3
+                b-form-group(label='Trạng Thái:',label-cols-sm="3",label-align-sm="right")
+                    b-form-checkbox-group(style="padding: 5px;",v-model='search.status_name',@change="onSearch",:options="getOptions('status')")
+            .col-md-2
+                b-form-group(label="Tổng cộng:",label-cols-sm="4",label-align-sm="right")
+                    my-currency-input(v-model="configs.total_luong",:disabled="true")   
+        .row(v-show="!forms.isLoading")
+            .col
+                vue-good-table(:columns='configs.columns',
+                        v-if="configs.rows2 && configs.rows2.length",
+                        :rows='configs.rows2',
+                        :line-numbers="true",
+                        :search-options="{enabled: true, skipDiacritics: true, trigger: 'enter', placeholder: 'Search name then press Enter'}"
+                        :pagination-options="{enabled: true, mode: 'records', perPage: 10, perPageDropdown: [10, 20, 30, 40, 50], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev', rowsPerPageLabel: 'Rows per page', ofLabel: 'of', pageLabel: 'page', allLabel: 'All'}"
+                    ) 
+                    template(slot="table-row" slot-scope="props")
+                        div(v-if="props.row.time && props.column.field == 'time'")
+                            div(v-if="props.row.time && props.row.time.soHD") 
+                                b-badge(v-if="props.row.status == 14", pill='', variant='warning') {{props.row.time.soHD}}
+                                b-badge(v-if="props.row.status == 16",pill='',variant='success') {{props.row.time.soHD}}
+                                b-badge(v-if="props.row.status == 15",pill='',variant='danger') {{props.row.time.soHD}}
+                            div(v-if="props.row.time && (isDate(props.row.time.day_from) === false || isDate(props.row.time.day_to) === false)")
+                                b-badge(pill='', variant='danger') {{ dateToDMY(props.row.time.day_from) }} ~ {{ dateToDMY(props.row.time.day_to) }}
+                            div(v-else="")
+                                b-badge(v-if="props.row.time && props.row.time.day_from && props.row.time.day_to", pill='', variant='Light') {{props.row.time.day_from}} ~ {{props.row.time.day_to}}
+                        div(v-else-if="props.column.field == 'status'")
+                            b-badge(v-if="props.row.status == 14", pill='', variant='warning') 
+                                categories(:arr="categories['status']", :id="props.row.status")
+                            b-badge(v-if="props.row.status == 16",pill='',variant='success')
+                                categories(:arr="categories['status']", :id="props.row.status")
+                            b-badge(v-if="props.row.status == 15",pill='',variant='danger')
+                                categories(:arr="categories['status']", :id="props.row.status")
+                        div(v-else-if="props.column.field == 'company_name'")
+                            categories(:arr="categories['company']", :id="props.row.company_name")
+                        div(v-else-if="props.column.field == 'Edit'")
+                            div(style="display:flex")
+                                b-button(variant="warning mx-2",@click="editData(props.row, props.row.originalIndex)") Edit
+                                b-button(variant="secondary mx-2",@click="duplicateData(props.row, props.row.originalIndex)") Duplicate
+                                b-button(variant="danger mx-2",@click="deleteData(props.row, props.row.originalIndex)") Delete
+                        div(v-else)
+                            span {{props.formattedRow[props.column.field]}}
+script(type="text/javascript").
+    (function(){
+        window.categories = !{JSON.stringify(locals.categories)};
+        console.log(window.categories);
+    })();
+script(type="text/javascript",src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+script(type="text/javascript",src="./js/bootstrap.js")
+script(src="https://cdn.jsdelivr.net/npm/moment@2.22")
+
+<!-- Date-picker itself -->
+script(src="https://cdn.jsdelivr.net/npm/pc-bootstrap4-datetimepicker@4.17/build/js/bootstrap-datetimepicker.min.js")
+script(type="text/javascript",src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js")
+include ./fileUpload
+include ./menu
+include ./categories
+script(type="text/javascript",src="./js/vue-good-table.min.js")
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js')
+script(src='//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js')
+script(src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5")
+script(src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js")
+script(type="text/javascript", src="js/mainRoles.js")
+script(type="text/javascript", src="js/viewer.min.js")
+
+
+script("text/javascript").
+    if (document.getElementById('vueel')) {
+        document.getElementById('vueel').style = 'display:block;';
+    }

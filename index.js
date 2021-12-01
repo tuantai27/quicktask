@@ -70,6 +70,9 @@ app.use(session({
         app.use('/salary', [login.checkAuth, pageSalary.router]);
         app.use('/excel', [login.checkAuth, pageExcel.router]);
         app.use('/home', [login.checkAuth, pageExcel.router]);
+        app.use('/categories', [login.checkAuth, pageExcel.router]);
+        app.use('/users', [login.checkAuth, pageExcel.router]);
+        app.use('/roles', [login.checkAuth, pageExcel.router]);
         app.use('/datalayer', [login.checkAuth, pageDatalayer.router]);
         app.post('/uploadfile', [login.checkAuth, file.uploadFile]);
         app.get('/deleteFile/:file_id', [login.checkAuth, file.deleteFile]);
