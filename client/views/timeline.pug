@@ -1,0 +1,58 @@
+script(type="text/javascript")
+    | const main_templates_time_line = `
+    div
+        b-jumbotron
+            template(#lead='')
+            | Thời gian gia nhập vào công ty 
+            hr.my-4
+            p
+            div
+                table(width="100%",class="table table-bordered table-hover")
+                    thead(v-html="getHeader()")
+                    tbody 
+                        tr(v-for="(item, index) in getDetail()")
+                            td {{ item.Name }}
+                            td(colspan="12")
+                                time-line-day(:items="item.Detail")
+    | `;
+script(type="text/javascript").
+    Vue.component('timeLine',{
+        props:{
+            'arrMonth'  : {type:[Array]      ,default: () => { return []; }},
+            'arrUser'   : {type:[Array]      ,default: () => { return []; }},
+        },
+        data:function() {
+            return {};
+        },
+        mounted: function() {
+           
+        },
+        methods:{
+            getHeader () {
+                const arr = ['Tên', '01/2021', '02/2021', '03/2021', '04/2021', '05/2021', '06/2021', '07/2021', '08/2021', '09/2021', '10/2021', '11/2021', '12/2021'];
+                let html = '';
+
+                for (i = 0; i < arr.length; i++) {
+                    html += `<th class="text-center">${arr[i]}</th>`;
+                }
+
+                return `<tr>${html}</tr>`;
+            },
+            getDetail() {
+                const arr = [{
+                    Name : 'Trương Tuấn Tài',
+                    Detail : [
+                        { from : '04/01/2021' , to : '04/30/2021', type : 'thu_viec'},
+                        { from : '05/01/2021' , to : '11/15/2021', type : 'chinh_thuc'},
+                    ]
+                },{
+                    Name : 'Nguyễn thị Quỳnh trâm',
+                    Detail : [
+                        { from : '05/01/2021' , to : '05/31/2021', type : 'thu_viec'},
+                        { from : '06/01/2021' , to : '12/31/2021', type : 'chinh_thuc'},
+                    ]
+                }];
+
+                return arr;
+            }
+        },template:main_templates_time_line});

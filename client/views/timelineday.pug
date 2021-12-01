@@ -1,0 +1,135 @@
+script(type="text/javascript")
+    | const main_templates_time_line_day = `
+    div
+        b-progress.mt-2(:max='getMax()' show-value='')
+            template(v-for="process in listProcess")
+                b-progress-bar(:value="process.count",:variant="process.variant",v-b-popover.hover.top="getDetail(process)",:title='getTitle(process)')
+    | `;
+script(type="text/javascript").
+        
+    Date.prototype.getFromFormat = function(format) {
+        var yyyy = this.getFullYear().toString();
+        format = format.replace(/yyyy/g, yyyy)
+        var mm = (this.getMonth()+1).toString(); 
+        format = format.replace(/mm/g, (mm[1]?mm:"0"+mm[0]));
+        var dd  = this.getDate().toString();
+        format = format.replace(/dd/g, (dd[1]?dd:"0"+dd[0]));
+        var hh = this.getHours().toString();
+        format = format.replace(/hh/g, (hh[1]?hh:"0"+hh[0]));
+        var ii = this.getMinutes().toString();
+        format = format.replace(/ii/g, (ii[1]?ii:"0"+ii[0]));
+        var ss  = this.getSeconds().toString();
+        format = format.replace(/ss/g, (ss[1]?ss:"0"+ss[0]));
+        return format;
+    };
+    Vue.component('timeLineDay',{
+        props:{
+            'items'     : {type:[Array]      , default: () => { return []; }},
+            'dayFrom'   : {type:[String]     , default: '01/01/2021'},
+            'dayTo'     : {type:[String]     , default: '12/31/2021'},
+        },
+        data:function() {
+            return {
+                flag        : false,
+                listColor   : {
+                    'empty'         : 'dark',
+                    'thu_viec'      : 'warning',
+                    'chinh_thuc'    : 'success',
+                    'nghi_viec'     : 'danger'
+                },
+                listProcess : []
+            };
+        },
+        mounted: function() {
+           this.listProcess = this.getValue();
+        },
+        methods:{
+            getTitle(input) {
+                if (input.type === 'empty') {
+                    return 'Chưa Làm Việc';
+                } else if (input.type === 'thu_viec') {
+                    return 'Đang Thử Việc';
+                } else if (input.type === 'chinh_thuc') {
+                    return 'Nhân viên chính thức';
+                } else if (input.type === 'nghi_viec') {
+                    return 'Đã Nghĩ Việc';
+                }
+            },
+            getDetail(input) {
+                return `Từ ${input.minDate.getFromFormat('dd/mm/yyyy')} Đến ${input.maxDate.getFromFormat('dd/mm/yyyy')}`;
+            },
+            getMax () {
+                let dateForm = new Date(this.dayFrom);
+                const dateTo = new Date(this.dayTo);
+                const diffTime = Math.abs(dateTo - dateForm);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                return diffDays;
+            },
+            getValue() {
+                const arr = [];
+                const max = 365;
+                let dateForm = new Date(this.dayFrom);
+                const dateTo = new Date(this.dayTo);
+                const diffTime = Math.abs(dateTo - dateForm);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                const output = [];
+                this.initItems();
+                let color = null;
+                let index = -1;
+                let minDate = null;
+                let maxDate = null;
+                this.flag = false;
+                for (let i = 0; i <= diffDays; i++) {
+                    if (i === 0) {
+                        dateForm = new Date(dateForm);
+                    } else {
+                        dateForm = new Date(dateForm.setDate(dateForm.getDate() + 1));
+                    }
+                   
+                    const new_color = this.getColor(dateForm);
+
+                    if (new_color !== color) {
+                        index += 1;
+                        color = new_color;
+                        output.push({
+                            variant  : this.listColor[new_color],
+                            type     : new_color,
+                            count    : 1,
+                            minDate  : new Date(dateForm.getTime()),
+                            maxDate  : new Date(dateForm.getTime())
+                        });
+                    } else {
+                        output[index].count += 1;
+                        output[index].maxDate = new Date(dateForm.getTime());
+                    }
+                }
+                //- console.log(output);
+                return output;
+            },
+            isSameDay(d1, d2) {
+                return d1.getFromFormat('dd/mm/yyyy') == d2.getFromFormat('dd/mm/yyyy');
+            },
+            getColor (currentDate) {
+                for (let i = 0; i < this.items.length; i++) {
+                    //- console.log(this.items[i]);
+                    if (this.items[i].from <= currentDate && this.items[i].to >= currentDate || this.isSameDay(currentDate, this.items[i].from) || this.isSameDay(currentDate, this.items[i].to)) {
+                        this.flag = true;
+                        return this.items[i].type;
+                    }
+                }
+                //- console.log(this.flag);
+                if (this.flag === false) {
+                    return 'empty';
+                } else {
+                    return 'nghi_viec';
+                }
+            },
+            initItems() {
+                for (let i = 0; i < this.items.length; i++) {
+                    
+                    this.items[i].from = new Date(this.items[i].from);
+                    this.items[i].to = new Date(this.items[i].to);
+                }
+                console.log(this.items);
+            }
+        },template:main_templates_time_line_day});
