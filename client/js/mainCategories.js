@@ -575,9 +575,7 @@ Vue.component('my-date-input', {
     };
 
     vueApp = new Vue({
-        // components:{Multiselect:window.VueMultiselect.default},
         components:{
-            // menuPage : 'menu-page'
         },
         el:'#vueel',
         data:{
@@ -636,9 +634,7 @@ Vue.component('my-date-input', {
             }
         },
         mounted () {
-            setTimeout(() => {
-                vueApp.onSearch();
-            }, 300);
+            
         },
         methods:methods
     });
