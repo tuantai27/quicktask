@@ -264,6 +264,9 @@ Vue.component('my-date-input', {
                 console.log(error);
             }
         },
+        runDeleteDetail : (index) => {
+            debugger;
+        },
         runEdit : () => {
             try {
                 if (vueApp.beforeCheck()) {
@@ -412,12 +415,6 @@ Vue.component('my-date-input', {
             row.toggleDetails();
             vueApp.updateViewer();
         },
-        initSoHD(company_name) {
-            const yyyyMM = vueApp.getYYYYmm();
-            const stt = vueApp.getStt(yyyyMM, company_name);
-            const sttName = stt.substring(stt.length - 3,stt.length);
-            return `${yyyyMM}-${sttName}/HĐLĐ-${company_name}`;
-        },
         getYYYYmm() {
             const date = new Date();
             const m = date.getMonth() + 1; //Month from 0 to 11
@@ -426,35 +423,7 @@ Vue.component('my-date-input', {
         },
         beforeCheck() {
             return true;
-            // if (vueApp.$data.modal.dataModal.detail.length === 0) {
-            //     vueApp.makeToast('danger', 'Hợp Đồng bắt buộc nhâp.');
-            //     return false;
-            // }
-            // if (vueApp.$data.modal.dataModal.detail.length > 0) {
-            //     if (vueApp.checkActiveHD() === false) {
-            //         vueApp.makeToast('danger', 'Hợp Đồng bắt buộc phải được sử dụng.')
-            //         return false;
-            //     }
-            // }
-            // if (vueApp.$data.modal.dataModal.company_name === '') {
-            //     vueApp.makeToast('danger', 'Tên công ty bắt buộc nhập.')
-            //     return false;
-            // }
-            // if (vueApp.$data.modal.dataModal.worker_name === '') {
-            //     vueApp.makeToast('danger', 'Tên nhân viên bắt buộc nhập.')
-            //     return false;
-            // }
-            // return true;
-        },
-        checkActiveHD() {
-            const arr = vueApp.$data.modal.dataModal.detail;
-            for (let i = 0; i < arr.length; i++) {
-                const element = arr[i];
-                if (element.active === true) {
-                    return true;
-                }
-            }
-            return false;
+
         },
         runAddData : () => {
             try {
@@ -471,52 +440,17 @@ Vue.component('my-date-input', {
         },
         initData() {
             return {
-                detail         : [vueApp.initdetail('LGW')],
-                detail2         : [],
-                company_name    : 0,
-                company_id      : 0,
-                worker_name     : '',
-                skype            : '',
-                ten_cong_ty      : '',
-                status           : '',
-                noi_lam_viec     : 'van_phong'
+                detail          : [vueApp.initdetail()],
+                code            : '',
+                name            : '',
+                meta_data       : '{}'
             };
         },
-        changeActive(row, index) {
-            setTimeout(() => {
-                if (row.active === true) {
-                    const arr = vueApp.$data.modal.dataModal.detail;
-                    for (let i = 0; i < arr.length; i++) {
-                        if (i === index) {
-                            continue;
-                        }
-                        arr[i].active = false;
-                    }
-                }
-            }, 300);
-        },
-        sortListHD() {
-            const compare =function ( a, b ) {
-                if ( a.active > b.active ){
-                    return -1;
-                }
-                if ( a.active < b.active ){
-                    return 1;
-                }
-                return 0;
-            };
-              
-            vueApp.$data.modal.dataModal.detail.sort(compare);
-        },
-        initdetail(company_name) {
+        initdetail() {
             return {
-                active          : false,
-                type            : 0,
-                soHD            : vueApp.initSoHD(company_name),
-                luong           : 0,
-                day_from        : '',
-                show_details    : '',
-                filesInfo       : []
+                id      : '',
+                value   : '',
+                name    : ''
             };
         },
         getOptions : (type) => {
@@ -534,7 +468,7 @@ Vue.component('my-date-input', {
             vueApp.$data.modal.dataModal.detail.slice(index, 1);
         },
         addRow : () => {
-            vueApp.$data.modal.dataModal.detail.push(vueApp.initdetail(vueApp.$data.modal.dataModal.company_name));
+            vueApp.$data.modal.dataModal.detail.push(vueApp.initdetail());
         },
         editData: (row, index) => {
             const {uuid} = row;
@@ -549,7 +483,6 @@ Vue.component('my-date-input', {
                 conf.action = "edit";
                 vueApp.$data.modal.dataModal = conf;
                 vueApp.$data.modal.index = index;
-                vueApp.sortListHD();
                 vueApp.$data.modal.showModal = true; 
             });
             
@@ -561,7 +494,6 @@ Vue.component('my-date-input', {
             conf.detail = [];
             vueApp.$data.modal.dataModal = conf;
             vueApp.$data.modal.index = index;
-            vueApp.sortListHD();
             vueApp.$data.modal.showModal = true;
             console.log(vueApp.$data.modal.index);
         },
@@ -588,12 +520,16 @@ Vue.component('my-date-input', {
                 total_luong : 0,
                 columns: [
                     {
+                        label: 'ID',
+                        field: 'id',
+                    },
+                    {
                         label: 'Categrogy Code',
-                        field: 'category_code',
+                        field: 'code',
                     },
                     {
                         label: 'Category Name',
-                        field: 'category_name',
+                        field: 'name',
                     },
                     {
                         label: 'Updated By',

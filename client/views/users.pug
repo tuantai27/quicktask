@@ -46,7 +46,6 @@ body
         .row(v-show="!forms.isLoading")
             .col
                 vue-good-table(:columns='configs.columns',
-                        v-if="configs.rows2 && configs.rows2.length",
                         :rows='configs.rows2',
                         :line-numbers="true",
                         :search-options="{enabled: true, skipDiacritics: true, trigger: 'enter', placeholder: 'Search name then press Enter'}"

@@ -220,7 +220,6 @@ Vue.component('my-date-input', {
                             console.log(company_name);
                             arr.push(meta_data);
                         }
-                        
                     }
                     vueApp.$data.configs.rows = arr;
                     console.log(result);

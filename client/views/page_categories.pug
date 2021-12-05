@@ -19,17 +19,15 @@ body
                         .row
                             .col
                                 b-form-group(label="Category Code:",label-cols-sm="3",label-align-sm="right")
-                                    b-form-input(v-model="modal.dataModal.category_code")
+                                    b-form-input(v-model="modal.dataModal.code")
                         .row
                             .col
                                 b-form-group(label="Category Name:",label-cols-sm="3",label-align-sm="right")
-                                    b-form-input(v-model="modal.dataModal.category_name")
+                                    b-form-input(v-model="modal.dataModal.name")
                         .row
                             .col
                                 b-form-group(label="Meta Data:",label-cols-sm="3",label-align-sm="right")
                                     b-form-input(v-model="modal.dataModal.meta_data")
-                        
-                    b-tab(title='Chi tiet')
                         .row
                             b-button.mr-2(size='sm',variant="primary ml-2 mb-2", @click='addRow')
                                 | thêm category
@@ -48,7 +46,7 @@ body
                                 template(#cell(name)='row')
                                     b-form-input(v-model="row.item.name")
                                 template(#cell(actions)='row')
-                                    b-button(variant="danger mr-2",@click="runDeleteHopDong($event, row.index)") Delete
+                                    b-button(variant="danger mr-2",@click="runDeleteDetail($event, row.index)") Delete
             div(slot="modal-footer")
                 b-button(variant="default mr-2",@click="runCancel") Cancel
                 span(v-if="modal.dataModal.action == 'add' ||  modal.dataModal.action == 'duplicate'")
