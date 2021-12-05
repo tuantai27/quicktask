@@ -99,66 +99,6 @@ Vue.component('my-date-input', {
     // eslint-disable-next-line no-undef
     let vueApp;
     const methods = {
-        getIcon : function (filename) {
-            switch (vueApp.getFileExtension(filename)) {
-                case 'xls' :
-                case 'xlsx' :
-                    return 'fa fa-file-excel-o';
-                case 'pdf' :
-                    return 'fa fa-file-pdf-o';
-                case 'doc' :
-                    return 'fa fa-file-word-o';
-                case 'zip' :
-                    return 'fa fa-file-zip-o';
-                case 'ppt' :
-                case 'pptx' :
-                    return 'fa fa-file-powerpoint-o';
-                case 'txt' :
-                    return 'fa fa-file-text-o';
-                default :
-                    return '';
-            }
-        },
-        buildUpload (files, index, typeDetail) {
-            console.log(files);
-            if (files && files.length > 0) {
-                const file = files[0];
-                if (!vueApp.checkFileExtension(file.name)) {
-                    vueApp.makeToast('danger', `file is invalid`);
-                    return;
-                }
-                // this.forms.uploads.document_id = this.current_document.id;
-                // this.forms.uploads.file = files[0];
-                const row = vueApp.$data.modal.dataModal[typeDetail][index];
-                row.filesInfo.push({id:0});
-                const indexFile = row.filesInfo.length;
-                Vue.set(vueApp.$data.modal.dataModal[typeDetail], index, row);
-                const formData = new FormData();
-                formData.append("file", files[0], files[0].name);
-                formData.append('action', 'add');
-                formData.append('action_id', 'file');
-                vueApp.runUpload(event, formData, {}, function (data) {
-                    console.log(data);
-                    if (data.status === "finish" && Array.isArray(data.result) && data.result.length > 0) {
-                        const row = vueApp.$data.modal.dataModal[typeDetail][index];
-                        row.filesInfo[indexFile - 1] = {
-                            id          : data.result[0],
-                            file_name   : file.name
-                        };
-                        Vue.set(vueApp.$data.modal.dataModal[typeDetail], index, row);
-                        vueApp.updateViewer();
-                    }
-                });
-            }
-        },
-        updateViewer() {
-            setTimeout(() => {
-                if (vueApp.$data.configs.viewer) {
-                    vueApp.$data.configs.viewer.destroy();
-                }
-                vueApp.$data.configs.viewer = new Viewer(document.getElementById('images_document'), {});
-            }, 100);
-        },
         insertData(row, tableName) {
             $.ajax({
                 url: `/datalayer/i/${tableName}`,
@@ -249,63 +189,6 @@ Vue.component('my-date-input', {
                 }
             });
         },
-        runUpload(event, formData, params, callback, progressHandling = function (event) {
-            let percent = 0;
-            let position = event.loaded || event.position;
-            let total = event.total;
-            if (event.lengthComputable) {
-                percent = Math.ceil(position / total * 100);
-            }
-            console.log(percent,'%');
-        }) {
-            const url = [];
-            for (const key of Object.keys(params)) {
-                url.push(`${key}=${params[key]}`);
-            }
-            event.target.disabled = true;
-            $.ajax({
-                url: `/uploadfile?${url.join('&')}`,
-                method: 'POST',
-                xhr: function () {
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) {
-                        myXhr.upload.addEventListener('progress', progressHandling, false);
-                    }
-                    return myXhr;
-                },
-                async: true,
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                timeout: 60000,
-                success:function(data,status,req){
-                    event.target.disabled = false;
-                    if(data.error) {
-                        vueApp.makeToast('danger','<b>can\'t edit:</b>' + data.error);
-                        return;
-                    }
-                    
-                    if (typeof callback === 'function') {
-                        callback(data);
-                    }
-                },
-                error:function() {
-                    event.target.disabled = false;
-                }
-            });
-           
-        },
-        checkFileExtension : function(filename) {
-            const images = ['png', 'ai', 'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'ps', 'psd', 'svg', 'tif', 'tiff'];
-            const files = ['xls', 'xlsx', 'doc', 'zip', 'ppt', 'pptx', 'txt', 'pdf'];
-            const ext = vueApp.getFileExtension(filename).toLocaleLowerCase();
-            return (images.includes(ext) || files.includes(ext)) ;
-        },
-        getFileExtension : function(filename) {
-            const ext = /^.+\.([^.]+)$/.exec(filename);
-            return ext == null ? "" : ext[1];
-        },
         isDate : (date) => {
             try {
                 // debugger;
@@ -339,77 +222,10 @@ Vue.component('my-date-input', {
                         }
                         
                     }
-                    const total = vueApp.total_luong(arr);
-                    vueApp.$data.configs.total_luong = total;
-                    vueApp.$data.configs.rows2 = arr;
                     vueApp.$data.configs.rows = arr;
                     console.log(result);
                 });
             }, 300);
-        },
-        removeFile(id, type) {
-            const rs = confirm('Are you Sure?');
-            if (rs) {
-                console.log(id);
-                // console.log(vueApp.$data.modal.dataModal.detail1);
-                const arr = vueApp.$data.modal.dataModal[type];
-                for(let i = 0; i < arr.length; i++) {
-                    const {filesInfo} = arr[i];
-                    for(let y = 0; y < filesInfo.length; y++) {
-                        if (filesInfo[y].id === id) {
-                            vueApp.removeServerFile(id, function(err, data) {
-                                if (err) {
-                                    vueApp.makeToast('danger','<b>can\'t edit:</b>' + err.error);
-                                    return;
-                                }
-                            });
-                            arr[i].filesInfo.splice(y, 1);
-                            Vue.set(vueApp.$data.modal.dataModal[type], i, arr[i]);
-                        }
-                    }
-                }
-            }
-        },
-        removeServerFile(id, callback) {
-            $.ajax({
-                url: `/deleteFile/${id}`,
-                method: 'GET',
-                async: true,
-                cache: false,
-                contentType: false,
-                processData: false,
-                timeout: 60000,
-                success:function(data,status,req){
-                    console.log(data);
-                    if(data.status !== 'success') {
-                        callback(data.error, null);
-                    } else {
-                        callback(null, data);
-                    }
-                }
-            });
-        },
-        downloadFile(id, name) {
-            const rs = confirm('Are you Sure?');
-            if (rs) {
-                console.log(id);
-                console.log(name);
-                fetch(`../client/files/${id}`)
-                    .then(resp => resp.blob())
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        // the filename you want
-                        a.download = name;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        alert('your file has downloaded!'); // or you know, something with better UX...
-                    })
-                    .catch(() => alert('oh no!'));
-            }
         },
         getIndexByUUID (row) {
             const table = vueApp.$data.configs.rows;
@@ -425,10 +241,10 @@ Vue.component('my-date-input', {
             try {
                 for (let i = 0; i < vueApp.$data.configs.rows.length; i++) {
                     const row = vueApp.$data.configs.rows[i];
-                    const {detail1} = row;
+                    const {detail} = row;
                     // debugger;
-                    for (let y = 0; y < detail1.length; y++) {
-                        const {active, day_to, day_from} = detail1[y];
+                    for (let y = 0; y < detail.length; y++) {
+                        const {active, day_to, day_from} = detail[y];
                         if (active === true) {
                             row.time.day_to = day_to;
                             row.time.day_from = day_from;
@@ -504,8 +320,8 @@ Vue.component('my-date-input', {
                     day_to      : '',
                     soHD        : ''
                 };
-                for (let i = 0; i < temp.detail1.length; i++) {
-                    const element = temp.detail1[i];
+                for (let i = 0; i < temp.detail.length; i++) {
+                    const element = temp.detail[i];
                     if (element.active === true) {
                         // const day_from = vueApp.dateToDMY(element.day_from);
                         // const day_to = vueApp.dateToDMY(element.day_to);
@@ -577,10 +393,10 @@ Vue.component('my-date-input', {
             for (let i = 0; i < table.length; i++) {
                 const row = table[i];
                 if (row.company_name === company_name) {
-                    const detail1 = row.detail1;
-                    if (Array.isArray(detail1) ) {
-                        for (let index = 0; index < detail1.length; index++) {
-                            const element = detail1[index];
+                    const detail = row.detail;
+                    if (Array.isArray(detail) ) {
+                        for (let index = 0; index < detail.length; index++) {
+                            const element = detail[index];
                             if (Object.prototype.hasOwnProperty.call(element, 'soHD') && element.soHD.indexOf(yyyyMM) >= 0) {
                                 arr.push(element);
                             }
@@ -602,25 +418,6 @@ Vue.component('my-date-input', {
             const sttName = stt.substring(stt.length - 3,stt.length);
             return `${yyyyMM}-${sttName}/HĐLĐ-${company_name}`;
         },
-        total_luong(table) {
-            let total = 0;
-            for (let i = 0; i < table.length; i++) {
-                const row = table[i];
-                const detail1 = row.detail1;
-                if (Array.isArray(detail1) ) {
-                    for (let index = 0; index < detail1.length; index++) {
-                        const element = detail1[index];
-                        if (Object.prototype.hasOwnProperty.call(element, 'active')) {
-                            if (Object.prototype.hasOwnProperty.call(element, 'luong') && element.luong >= 0) {
-                                total += Number(element.luong);
-                            }
-                        }
-                    }
-                }
-                    
-            }
-            return total;
-        },
         getYYYYmm() {
             const date = new Date();
             const m = date.getMonth() + 1; //Month from 0 to 11
@@ -629,11 +426,11 @@ Vue.component('my-date-input', {
         },
         beforeCheck() {
             return true;
-            // if (vueApp.$data.modal.dataModal.detail1.length === 0) {
+            // if (vueApp.$data.modal.dataModal.detail.length === 0) {
             //     vueApp.makeToast('danger', 'Hợp Đồng bắt buộc nhâp.');
             //     return false;
             // }
-            // if (vueApp.$data.modal.dataModal.detail1.length > 0) {
+            // if (vueApp.$data.modal.dataModal.detail.length > 0) {
             //     if (vueApp.checkActiveHD() === false) {
             //         vueApp.makeToast('danger', 'Hợp Đồng bắt buộc phải được sử dụng.')
             //         return false;
@@ -650,7 +447,7 @@ Vue.component('my-date-input', {
             // return true;
         },
         checkActiveHD() {
-            const arr = vueApp.$data.modal.dataModal.detail1;
+            const arr = vueApp.$data.modal.dataModal.detail;
             for (let i = 0; i < arr.length; i++) {
                 const element = arr[i];
                 if (element.active === true) {
@@ -674,33 +471,11 @@ Vue.component('my-date-input', {
         },
         initData() {
             return {
-                detail1         : [vueApp.initDetail1('LGW')],
+                detail         : [vueApp.initdetail('LGW')],
                 detail2         : [],
                 company_name    : 0,
                 company_id      : 0,
                 worker_name     : '',
-                sex              : 'nam',
-                chuc_danh        : 'Nhân viên',
-                ngay_sinh        : '',
-                nguyen_quan      : '',
-                trinh_do         : '',
-                dc_thuong_tru    : '',
-                dc_hien_tai      : '',
-                cmnd             : '',
-                ngay_cap         : '',
-                noi_cap          : '',
-                mst              : '',
-                chi_cuc_thue     : '',
-                so_bhxh          : '',
-                the_bhyt         : '',
-                benh_vien        : '',
-                so_tai_khoan     : '',
-                ngan_hang        : '',
-                sdt_cong_ty      : '',
-                sdt_ca_nhan      : '',
-                so_may_nhanh     : '',
-                email_cong_ty    : '',
-                email_ca_nhan    : '',
                 skype            : '',
                 ten_cong_ty      : '',
                 status           : '',
@@ -710,7 +485,7 @@ Vue.component('my-date-input', {
         changeActive(row, index) {
             setTimeout(() => {
                 if (row.active === true) {
-                    const arr = vueApp.$data.modal.dataModal.detail1;
+                    const arr = vueApp.$data.modal.dataModal.detail;
                     for (let i = 0; i < arr.length; i++) {
                         if (i === index) {
                             continue;
@@ -731,73 +506,35 @@ Vue.component('my-date-input', {
                 return 0;
             };
               
-            vueApp.$data.modal.dataModal.detail1.sort(compare);
+            vueApp.$data.modal.dataModal.detail.sort(compare);
         },
-        initDetail1(company_name) {
+        initdetail(company_name) {
             return {
                 active          : false,
                 type            : 0,
                 soHD            : vueApp.initSoHD(company_name),
                 luong           : 0,
                 day_from        : '',
-                day_to          : '',
-                pc_xang_xe      : 0,
-                pc_dien_thoai   : 0,
-                tinh_thang_hdld : '12 thang',
-                ghi_chu         : 'LOGI-068',
                 show_details    : '',
                 filesInfo       : []
-            };
-        },
-        initDetail2() {
-            return {
-                active              : true,
-                name                : '',
-                cmnd                : '',
-                mst                 : '',
-                month_from          : '',
-                month_to            : '',
-                ngay_sinh           : '',
-                quoc_tich           : '',
-                quan_he             : '',
-                so                  : '',
-                quyen               : '',
-                quoc_gia            : '',
-                tinh_thanh_pho      : '',
-                quan_huyen          : '',
-                phuong_xa           : '',
-                note                : '',
-                filesInfo           : [],
-                show_details        : ''
             };
         },
         getOptions : (type) => {
             return this.categories[type];
         },
-        runDeleteHopDong : (event, index) => {
-            // debugger;
-            let result = confirm("Want to delete?");
-            if (result) {
-                //Logic to delete the item
-                vueApp.modal.dataModal.detail1.splice(index, 1);
-            }
-        },
         addData: () => {
             const conf = vueApp.initData();
-            conf.title = "Thêm Nhân Sự";
+            conf.title = "Thêm Category";
             conf.action = "add";
             vueApp.$data.modal.dataModal = conf;
             vueApp.$data.modal.showModal = true;
 
         },
         removeRow(index) {
-            vueApp.$data.modal.dataModal.detail1.slice(index, 1);
+            vueApp.$data.modal.dataModal.detail.slice(index, 1);
         },
         addRow : () => {
-            vueApp.$data.modal.dataModal.detail1.push(vueApp.initDetail1(vueApp.$data.modal.dataModal.company_name));
-        },
-        addRowNguoiPhuThuoc : () => {
-            vueApp.$data.modal.dataModal.detail2.push(vueApp.initDetail2());
+            vueApp.$data.modal.dataModal.detail.push(vueApp.initdetail(vueApp.$data.modal.dataModal.company_name));
         },
         editData: (row, index) => {
             const {uuid} = row;
@@ -821,7 +558,7 @@ Vue.component('my-date-input', {
             const conf = {...vueApp.initData(), ...row};
             conf.title = "Thêm Nhân Sự";
             conf.action = "duplicate";
-            conf.detail1 = [];
+            conf.detail = [];
             vueApp.$data.modal.dataModal = conf;
             vueApp.$data.modal.index = index;
             vueApp.sortListHD();
@@ -853,114 +590,41 @@ Vue.component('my-date-input', {
                 total_luong : 0,
                 columns: [
                     {
-                        label: 'Tên Công Ty',
-                        field: 'company_name',
+                        label: 'Categrogy Code',
+                        field: 'category_code',
                     },
                     {
-                        label: 'Họ Tên Nhân Viên',
-                        field: 'worker_name',
+                        label: 'Category Name',
+                        field: 'category_name',
                     },
                     {
-                        label: 'Email Công Ty',
-                        field: 'email_cong_ty'
+                        label: 'Updated By',
+                        field: 'updated_by'
                     },
                     {
-                        label: 'Trạng Thái',
-                        field: 'status'
-                    },
-                    {
-                        label: 'Thời Gian',
-                        field: 'time'
-                    },
-                    {
-                        label: 'Số Người Phụ Thuộc',
-                        field: 'sNpT'
+                        label: 'Update At',
+                        field: 'updated_at'
                     },
                     {
                         label: 'Action',
                         field: 'Edit'
                     }
                 ],
-                rows2   : [],
                 rows    : [],
-                fieldsNguoiPhuThuoc : [
+                fieldsDetail : [
                     {
-                        key: 'active',
-                        label: 'Active'
+                        key: 'Value',
+                        label: 'Value'
                     },
                     {
-                        key: 'name',
-                        label: 'Tên Người phụ thuộc'
-                    },
-                    {
-                        key: 'ngay_sinh',
-                        label: 'Ngày Sinh'
-                    },
-                    {
-                        key: 'mst',
-                        label: 'Mã Số Thuế'
-                    },
-                    {
-                        key: 'quoc_tich',
-                        label: 'Quốc Tịch'
-                    },
-                    {
-                        key: 'cmnd',
-                        label: 'CMND'
-                    },
-                    {
-                        key: 'quan_he',
-                        label: 'Quan Hệ'
-                    },
-                    {
-                        key: 'note',
-                        label: 'Ghi Chú'
-                    },
-                    {
-                        key: 'month_from',
-                        label: 'Tháng Từ'
-                    },
-                    {
-                        key: 'show_details',
-                        label: 'Actions'
-                    }
-                ],
-                fieldsHD: [
-                    {
-                        key: 'active',
-                        label: 'Active'
-                    },
-                    {
-                        key: 'type',
-                        label: 'Loại Hợp Đồng'
-                    },
-                    {
-                        key: 'soHD',
-                        label: 'Số Hợp Đồng'
-                    },
-                    {
-                        key: 'day_from',
-                        label: 'Ngày Từ'
-                    },
-                    {
-                        key: 'day_to',
-                        label: 'Ngày Đến'
-                    },
-                    {
-                        key: 'luong',
-                        label: 'Mức Lương'
+                        key: 'Name',
+                        label: 'Name'
                     },
                     {
                         key: 'actions',
                         label: 'Actions'
                     }
-                ],
-                viewer : null,
-                configInfo: {team:[]},
-                configInfoTeam: '',
-                configInfoFolder: '',
-                configInfoFolderDisable: false,
-                configInfoSubFolder:''
+                ]
             },
             modal: {
                 countDown:0,
@@ -969,12 +633,6 @@ Vue.component('my-date-input', {
                 showModal:false,
                 dataModal:{},
                 saveCurrentPage : []
-            },
-            search : {
-                company_name    : '',
-                day_from        : '',
-                day_to          : '',
-                status_name     : [14, 16]
             }
         },
         mounted () {
@@ -984,17 +642,4 @@ Vue.component('my-date-input', {
         },
         methods:methods
     });
-
-    // helper function to easily add alerts
-    let alertVue;
-    alertVue = new Vue({
-        el:'#alertHolder',
-        data:{alertText:'',type:'danger',showAlert:false,countDown:0,totalCountDown:8}
-    });
-
-    function addAlert(alertType, alertText, totalCountDown) {
-        alertVue.$data.alertText = alertText;
-        alertVue.$data.type = alertType + ' text-center';
-        alertVue.$data.countDown = totalCountDown || alertVue.$data.totalCountDown;
-    }
 })();
