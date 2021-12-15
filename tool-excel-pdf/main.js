@@ -22,10 +22,10 @@ async function createTemplate1(browser, dataALLExcel, fileName) {
     const html_table = renderTable(dataALLExcel.rows);
     htmlContent = htmlContent.replace('[rows_data]', html_table);
     htmlContent = htmlContent.replace('[tong_so_luong]', dataALLExcel.tong_so_luong);
-    htmlContent = htmlContent.replace('[so_hoa_don]', dataALLExcel.so_hoa_don);
+    htmlContent = htmlContent.replace('[so_hoa_don]', replaceSpace(dataALLExcel.so_hoa_don));
     htmlContent = htmlContent.replace('[ngay_hoa_don]', formatDate(dataALLExcel.ngay_hoa_don));
-    htmlContent = htmlContent.replace('[ten_khach_hang]', ten_khach_hang);
-    htmlContent = htmlContent.replace('[dia_chi_giao_hang]', dataALLExcel.dia_chi_giao_hang);
+    htmlContent = htmlContent.replace('[ten_khach_hang]', replaceSpace(ten_khach_hang));
+    htmlContent = htmlContent.replace('[dia_chi_giao_hang]', replaceSpace(dataALLExcel.dia_chi_giao_hang));
     htmlContent = htmlContent.replace('[khach_phai_tra]', commaNumber(dataALLExcel.khach_phai_tra, '.'));
     htmlContent = htmlContent.replace('[phi_giao_hang]', commaNumber(dataALLExcel.phi_giao_hang, '.'));
     htmlContent = htmlContent.replace('[chiet_khau]', dataALLExcel.chiet_khau);
@@ -42,6 +42,13 @@ async function createTemplate1(browser, dataALLExcel, fileName) {
     return fileNameOutput;
 }
 
+function replaceSpace(str) {
+    if (str && typeof str === 'string') {
+        return str.replace(new RegExp('\r?\n','g'), '<br />');
+    }
+    return str;
+}
+
 async function createTemplate2(browser, dataALLExcel, fileName) {
     let ten_khach_hang = dataALLExcel.ten_khach_hang;
 
@@ -49,11 +56,11 @@ async function createTemplate2(browser, dataALLExcel, fileName) {
     const pathFileTemplate = path.join(__dirname,'input','template_2.html');
     let htmlContent2 = await getFileHTML(pathFileTemplate);
 
-    htmlContent2 = htmlContent2.replace('[so_phieu_thu]', dataALLExcel.so_phieu_thu);
-    htmlContent2 = htmlContent2.replace('[so_hoa_don]', dataALLExcel.so_hoa_don);
-    htmlContent2 = htmlContent2.replace('[so_dien_thoai]', dataALLExcel.so_dien_thoai);
-    htmlContent2 = htmlContent2.replace('[ten_khach_hang]', ten_khach_hang);
-    htmlContent2 = htmlContent2.replace('[dia_chi_giao_hang]', dataALLExcel.dia_chi_giao_hang);
+    htmlContent2 = htmlContent2.replace('[so_phieu_thu]', replaceSpace(dataALLExcel.so_phieu_thu));
+    htmlContent2 = htmlContent2.replace('[so_hoa_don]', replaceSpace(dataALLExcel.so_hoa_don));
+    htmlContent2 = htmlContent2.replace('[so_dien_thoai]', replaceSpace(dataALLExcel.so_dien_thoai));
+    htmlContent2 = htmlContent2.replace('[ten_khach_hang]', replaceSpace(ten_khach_hang));
+    htmlContent2 = htmlContent2.replace('[dia_chi_giao_hang]', replaceSpace(dataALLExcel.dia_chi_giao_hang));
     htmlContent2 = htmlContent2.replace('[khach_phai_tra]', commaNumber(dataALLExcel.khach_phai_tra, '.'));
     htmlContent2 = htmlContent2.replace('[khach_phai_tra_bang_chu]', DocTienBangChu(dataALLExcel.khach_phai_tra));
 
@@ -80,12 +87,12 @@ async function createTemplate3(browser, dataALLExcel, fileName) {
     const html_table = renderTable2(dataALLExcel.rows);
     htmlContent = htmlContent.replace('[rows_data]', html_table);
     htmlContent = htmlContent.replace('[tong_so_luong]', dataALLExcel.tong_so_luong);
-    htmlContent = htmlContent.replace('[so_hoa_don]', dataALLExcel.so_hoa_don);
-    htmlContent = htmlContent.replace('[so_hoa_don]', dataALLExcel.so_hoa_don);
-    htmlContent = htmlContent.replace('[so_phieu_thu]', dataALLExcel.so_phieu_thu);
+    htmlContent = htmlContent.replace('[so_hoa_don]', replaceSpace(dataALLExcel.so_hoa_don));
+    htmlContent = htmlContent.replace('[so_hoa_don]', replaceSpace(dataALLExcel.so_hoa_don));
+    htmlContent = htmlContent.replace('[so_phieu_thu]', replaceSpace(dataALLExcel.so_phieu_thu));
     htmlContent = htmlContent.replace('[ngay_hoa_don]', formatDate(dataALLExcel.ngay_hoa_don));
-    htmlContent = htmlContent.replace('[ten_khach_hang]', ten_khach_hang);
-    htmlContent = htmlContent.replace('[dia_chi_giao_hang]', dataALLExcel.dia_chi_giao_hang);
+    htmlContent = htmlContent.replace('[ten_khach_hang]', replaceSpace(ten_khach_hang));
+    htmlContent = htmlContent.replace('[dia_chi_giao_hang]', replaceSpace(dataALLExcel.dia_chi_giao_hang));
     htmlContent = htmlContent.replace('[khach_phai_tra]', commaNumber(dataALLExcel.khach_phai_tra, '.'));
     htmlContent = htmlContent.replace('[phi_giao_hang]', dataALLExcel.phi_giao_hang);
     htmlContent = htmlContent.replace('[chiet_khau]', dataALLExcel.chiet_khau);
@@ -489,9 +496,9 @@ function renderTable2(arr) {
             const temp = [];
             temp.push(`<tr style="padding: 8px;">`);
             temp.push(`<td style="text-align: center;padding:4px;">${arr[i].stt}</td>`);
-            temp.push(`<td style="text-align: center;">${arr[i].ma_sp}</td>`);
-            temp.push(`<td style="">${arr[i].ten_sp}</td>`);
-            temp.push(`<td style="text-align: center;">${arr[i].dvt}</td>`);
+            temp.push(`<td style="text-align: center;">${replaceSpace(arr[i].ma_sp)}</td>`);
+            temp.push(`<td style="">${replaceSpace(arr[i].ten_sp)}</td>`);
+            temp.push(`<td style="text-align: center;">${replaceSpace(arr[i].dvt)}</td>`);
             temp.push(`<td style="text-align: center;">${arr[i].sl}</td>`);
             temp.push(`</tr>`);
             str += temp.join('');
@@ -512,8 +519,8 @@ function renderTable(arr) {
             const temp = [];
             temp.push(`<tr style="padding: 8px;">`);
             temp.push(`<td style="text-align: center;padding:4px;">${arr[i].stt}</td>`);
-            temp.push(`<td style="">${arr[i].ten_sp}</td>`);
-            temp.push(`<td style="text-align: center;">${arr[i].dvt}</td>`);
+            temp.push(`<td style="">${replaceSpace(arr[i].ten_sp)}</td>`);
+            temp.push(`<td style="text-align: center;">${replaceSpace(arr[i].dvt)}</td>`);
             temp.push(`<td style="text-align: center;">${arr[i].sl}</td>`);
             temp.push(`<td style="padding-right:4px; text-align: right;">${commaNumber(arr[i].don_gia, '.')}</td>`);
             temp.push(`<td style="padding-right:4px;text-align: right;">${commaNumber(arr[i].thanh_tien, '.')}</td>`);
