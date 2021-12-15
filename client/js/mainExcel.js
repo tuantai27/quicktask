@@ -270,8 +270,27 @@ Vue.component('my-currency-input', {
             var y = date.getFullYear();
             return '' + y + (m<=9 ? '0' + m : m);
         },
+        replaceData(data) {
+            const reg = new RegExp('\r?\n','g');
+            
+            for (const key of Object.keys(data)) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        for (let i = 0; i < data[key].length; i++) {
+                            const item = data[key][i];
+                            if (item && typeof item === 'object') {
+                                data[key][i] = this.replaceData(item);
+                            }
+                        }
+                    } else if ( typeof data[key] === 'string') {
+                        data[key] = data[key].replace(reg, '');
+                    }
+                }
+            }
+            return data;
+        },
         runCreate () {
-            const formData = vueApp.$data.modal.dataModal;
+            const formData = this.replaceData(vueApp.$data.modal.dataModal);
             console.log(formData);
             vueApp.$data.modal.show = true; 
             $.ajax({
