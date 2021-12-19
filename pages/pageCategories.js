@@ -36,10 +36,10 @@ async function getPage(req, res, next) {
                 setting['categories'][key] = element[key];
             }
         }
-        setting.hasPermissionAdd    = hasPermission(req, 'Add');
-        setting.hasPermissionUpdate = hasPermission(req, 'Update');
-        setting.hasPermissionRemove = hasPermission(req, 'Remove');
-        setting.hasPermissionSearch = hasPermission(req, 'Search');
+        // setting.hasPermissionAdd    = hasPermission(req, 'Add');
+        // setting.hasPermissionUpdate = hasPermission(req, 'Update');
+        // setting.hasPermissionRemove = hasPermission(req, 'Remove');
+        // setting.hasPermissionSearch = hasPermission(req, 'Search');
         console.log(setting)
         res.render('page_categories', setting);
     } catch (error) {
