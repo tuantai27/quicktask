@@ -5,6 +5,9 @@ const output = {};
 
 output.router = router();
 output.router.get('/' , getPage);
+output.router.post('/add' , add);
+output.router.post('/update' , update);
+output.router.post('/remove' , remove);
 
 async function getPage(req, res, next) {
     try {
@@ -31,10 +34,19 @@ async function getPage(req, res, next) {
         }
         
         console.log(setting)
-        res.render('page_categories', setting);
+        res.render('roles', setting);
     } catch (error) {
         console.log(error);
     }
 };
 
+
+async function add(req, res, next) {
+}
+
+async function update(req, res, next) {
+}
+
+async function remove(req, res, next) {
+}
 module.exports = output;

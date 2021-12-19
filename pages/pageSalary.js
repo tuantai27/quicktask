@@ -1,5 +1,5 @@
 const salary = require('../datalayer/salary');
-const sendEmail = require('./sendEmail');
+const sendEmail = require('../modules/sendEmail');
 const router = require('express').Router;
 const path = require('path');
 const output = {};

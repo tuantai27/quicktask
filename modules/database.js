@@ -22,6 +22,13 @@ class database {
             );
         });
     }
+    getTransaction () {
+        return this.connection.beginTransaction();
+
+    }
+    commit () {
+        
+    }
 }
 
 module.exports = database;
