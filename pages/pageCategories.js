@@ -1,15 +1,17 @@
 const system_data = require('../datalayer/system_data');
 const categories = require('../datalayer/categories');
 const categories_detail = require('../datalayer/categories_detail');
+const { pageType }      = require('../modules/typePermission');
+const permission        = require('../modules/permission');
 const hrm = require('../form/hrm');
 const router = require('express').Router;
 const output = {};
 
 output.router = router();
-output.router.get('/' , getPage);
-output.router.post('/add', add);
-output.router.post('/update', update);
-output.router.post('/remove', remove);
+output.router.get('/' , hasPermission, getPage);
+output.router.post('/add', hasPermission, add);
+output.router.post('/update', hasPermission, update);
+output.router.post('/remove', hasPermission, remove);
 
 async function getPage(req, res, next) {
     try {
@@ -61,8 +63,15 @@ async function update(req, res, next) {
 async function remove(req, res, next) {
 }
 
-function hasPermission(req, type) {
-    return false;
+function hasPermission(req, res, next) {
+    if (req.session && req.session.roles) {
+        const permisisons =  permission.buildPermisison(req.session.roles);
+        if (permisisons.can('view', new pageType('categories'))) {
+            next();
+            return;
+        }
+    }
+    res.status(200).send({ status :"no permission" });
 }
 
 

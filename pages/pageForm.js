@@ -1,10 +1,12 @@
 const system_data = require('../datalayer/system_data');
 const hrm = require('../form/hrm');
 const router = require('express').Router;
+const permission        = require('../modules/permission');
+const {pageType}        = require('../modules/typePermission');
 const output = {};
 
 output.router = router();
-output.router.get('/' , getPage);
+output.router.get('/', hasPermission, getPage);
 
 async function getPage(req, res, next) {
     try {
@@ -36,5 +38,16 @@ async function getPage(req, res, next) {
         console.log(error);
     }
 };
+
+function hasPermission(req, res, next) {
+    if (req.session && req.session.roles) {
+        const permisisons =  permission.buildPermisison(req.session.roles);
+        if (permisisons.can('view', new pageType('home'))) {
+            next();
+            return;
+        }
+    }
+    res.status(200).send({ status :"no permission" });
+}
 
 module.exports = output;

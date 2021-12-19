@@ -1,4 +1,5 @@
 const users  = require('../datalayer/users');
+const permission  = require('../modules/permission');
 const {OAuth2Client} = require('google-auth-library');
 const router = require('express').Router;
 const output = {
@@ -8,10 +9,24 @@ const output = {
 output.router = router();
 output.router.get('/destroy_session', destroySession);
 output.router.get('/'               , getPageLogin);
-output.router.post('/set_session'   , setSession);
+output.router.get('/pages'          , getPages);
 
 output.init = function (config) {
     output.config = config;
+}
+
+
+async function getPages (req, res, next) {
+    try {
+        let arr = [];
+        if(req.session.UserId && req.session.UserEmail && req.session.project_id) {
+            arr = req.session.pages;
+        }
+        return res.status(200).send(arr);
+        
+    } catch (error) {
+        return res.status(500).send('{"error":"user_retrieval_error_' + error.message + '"}');
+    }
 }
 
 output.checkToken = async function (req, res, next) {
@@ -27,9 +42,15 @@ output.checkToken = async function (req, res, next) {
         const payload = ticket.payload;
         if (payload && payload.email) {
             const email = payload.email;
-            const {project_id, id} = await users.checkUserEmail(email);
+            const {project_id, id, role_name} = await users.checkUserEmail(email);
             if (project_id && id && email) {
-                req.session.UserId      = id;  
+                const roles = permission.getRole(role_name);
+                const permisisons = permission.buildPermisison(roles);
+                console.log(roles);
+                req.session.UserId      = id;
+                req.session.roles       = roles;
+                req.session.pages       = permission.getPages(permisisons);
+                console.log(`pages %o`, req.session.pages);
                 req.session.UserEmail   = email;  
                 req.session.project_id  = project_id;
                 req.session.picture     = payload.picture;
@@ -74,19 +95,6 @@ async function getPageLogin(req, res, next) {
     } else {
         res.render('login',{});
     }    
-};
-
-async function setSession(req, res, next) {
-    const {passWord, userName} = req.body;
-    const {project_id, id, email} = await users.checkUser(userName, passWord);
-    if (project_id && id && email) {
-        req.session.UserId      = id;  
-        req.session.UserEmail   = email;  
-        req.session.project_id  = project_id;
-        return res.status(200).json({status: 'success'});
-    } else {
-        return res.status(200).json({status: 'invalid'});
-    }
 };
 
 module.exports = output;

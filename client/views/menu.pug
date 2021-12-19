@@ -5,12 +5,7 @@ script(type="text/javascript")
             b-navbar-toggle(target='nav-collapse')
             b-collapse#nav-collapse(is-nav='')
                 b-navbar-nav
-                    b-nav-item(href='./form?page=hrm') Home
-                    b-nav-item(href='./Salary') Salary
-                    b-nav-item(href='./excel') Excel
-                    b-nav-item(href='./categories') Categories
-                    b-nav-item(href='./roles') Roles
-                    b-nav-item(href='./users') Users
+                    b-nav-item(v-for="item in items" :key="item.name" :href="item.url") {{ item.html }}
             // Right aligned nav items
             b-navbar-nav.ml-auto
                 b-navbar-nav(right='')
@@ -22,9 +17,25 @@ script(type="text/javascript").
         name:"menuPage",
         props:{},
         data:function() {
-            return {};
+            return {
+                items : []
+                //- items : [{"name":"home","url":"./form?page=hrm","html":"Home"},{"name":"salary","url":"./Salary","html":"Salary"},{"name":"excel","url":"./excel","html":"Excel"},{"name":"categories","url":"./categories","html":"Categories"},{"name":"roles","url":"./roles","html":"Roles"},{"name":"users","url":"./users","html":"Users"}]
+            };
         },
         mounted: function() {
+            debugger;
+            const that = this;
+            $.ajax({
+                url: `/pages`,
+                method: 'GET',
+                data: {},
+                success:function(data,status,req){
+                    console.log(data);
+                    that.items = data;
+                },
+                error:function(error) {
+                }
+            });
         },
         methods:{
         },template:main_templates_menus});

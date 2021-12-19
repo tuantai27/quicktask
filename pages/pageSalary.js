@@ -1,17 +1,19 @@
 const salary = require('../datalayer/salary');
 const sendEmail = require('../modules/sendEmail');
+const permission        = require('../modules/permission');
+const {pageType}        = require('../modules/typePermission');
 const router = require('express').Router;
 const path = require('path');
 const output = {};
 
 output.router = router();
-output.router.get('/'                       , getPageSalary);
-output.router.get('/getDataSalary/:monthly' , getDataSalary);
-output.router.get('/getDataSalaryMonth'     , getDataSalaryMonth);
-output.router.get('/downloadReports/:monthly', downloadReports);
-output.router.post('/sendEmailSalary'       , sendEmailSalary);
-output.router.post('/updateSalary'          , updateSalary);
-output.router.post('/deleteSalary'          , deleteSalary);
+output.router.get('/'                       , hasPermission, getPageSalary);
+output.router.get('/getDataSalary/:monthly' , hasPermission, getDataSalary);
+output.router.get('/getDataSalaryMonth'     , hasPermission, getDataSalaryMonth);
+output.router.get('/downloadReports/:monthly', hasPermission, downloadReports);
+output.router.post('/sendEmailSalary'       , hasPermission, sendEmailSalary);
+output.router.post('/updateSalary'          , hasPermission, updateSalary);
+output.router.post('/deleteSalary'          , hasPermission, deleteSalary);
 
 
 async function deleteSalary(req, res, next) {
@@ -102,5 +104,16 @@ async function downloadReports(req, res, next) {
     }
     
 };
+
+function hasPermission(req, res, next) {
+    if (req.session && req.session.roles) {
+        const permisisons =  permission.buildPermisison(req.session.roles);
+        if (permisisons.can('view', new pageType('salary'))) {
+            next();
+            return;
+        }
+    }
+    res.status(200).send({ status :"no permission" });
+}
 
 module.exports = output;

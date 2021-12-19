@@ -2,6 +2,9 @@ const path              = require('path');
 const fs                = require('fs');
 const mainCreateFile    = require('../tool-excel-pdf/main');
 const router            = require('express').Router;
+const { pageType }      = require('../modules/typePermission');
+const permission        = require('../modules/permission');
+const { type } = require('os');
 const output = {
     browser : null
 };
@@ -11,10 +14,10 @@ output.init = function (browser){
 }
 
 output.router = router();
-output.router.get('/', getPageExcel);
-output.router.get('/getFileById/:id', getFileById);
-output.router.post('/getDataFromUUID', getDataFromUUID);
-output.router.post('/createFile', createFile);
+output.router.get('/', hasPermission, getPageExcel);
+output.router.get('/getFileById/:id', hasPermission, getFileById);
+output.router.post('/getDataFromUUID', hasPermission, getDataFromUUID);
+output.router.post('/createFile', hasPermission, createFile);
 
 async function getPageExcel(req, res, next) {
     res.render('indexExcel',{});
@@ -69,5 +72,16 @@ async function getDataFromUUID(req, res, next) {
         return res.status(400).send({ status :"error", result: e});
     }
 };
+
+function hasPermission(req, res, next) {
+    if (req.session && req.session.roles) {
+        const permisisons =  permission.buildPermisison(req.session.roles);
+        if (permisisons.can('view', new pageType('excel'))) {
+            next();
+            return;
+        }
+    }
+    res.status(200).send({ status :"no permission" });
+}
 
 module.exports = output;

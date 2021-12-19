@@ -12,6 +12,7 @@
   "author": "test",
   "license": "limit",
   "dependencies": {
+    "@casl/ability": "^3.4.0",
     "archiver": "^5.3.0",
     "archiver-zip-encryptable": "^1.0.9",
     "aws-sdk": "^2.747.0",
