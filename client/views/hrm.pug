@@ -280,45 +280,39 @@ body
                     my-currency-input(v-model="configs.total_luong",:disabled="true")   
         .row(v-show="!forms.isLoading")
             div
-  
             .col
-                b-tabs(content-class='mt-3')
-                    b-tab(title='First' active='')
-                        time-line
-                    b-tab(title='Second')
-                        vue-good-table(:columns='configs.columns',
-                                v-if="configs.rows2 && configs.rows2.length",
-                                :rows='configs.rows2',
-                                :line-numbers="true",
-                                :search-options="{enabled: true, skipDiacritics: true, trigger: 'enter', placeholder: 'Search name then press Enter'}"
-                                :pagination-options="{enabled: true, mode: 'records', perPage: 10, perPageDropdown: [10, 20, 30, 40, 50], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev', rowsPerPageLabel: 'Rows per page', ofLabel: 'of', pageLabel: 'page', allLabel: 'All'}"
-                            ) 
-                            template(slot="table-row" slot-scope="props")
-                                div(v-if="props.row.time && props.column.field == 'time'")
-                                    div(v-if="props.row.time && props.row.time.soHD") 
-                                        b-badge(v-if="props.row.status == 14", pill='', variant='warning') {{props.row.time.soHD}}
-                                        b-badge(v-if="props.row.status == 16",pill='',variant='success') {{props.row.time.soHD}}
-                                        b-badge(v-if="props.row.status == 15",pill='',variant='danger') {{props.row.time.soHD}}
-                                    div(v-if="props.row.time && (isDate(props.row.time.day_from) === false || isDate(props.row.time.day_to) === false)")
-                                        b-badge(pill='', variant='danger') {{ dateToDMY(props.row.time.day_from) }} ~ {{ dateToDMY(props.row.time.day_to) }}
-                                    div(v-else="")
-                                        b-badge(v-if="props.row.time && props.row.time.day_from && props.row.time.day_to", pill='', variant='Light') {{props.row.time.day_from}} ~ {{props.row.time.day_to}}
-                                div(v-else-if="props.column.field == 'status'")
-                                    b-badge(v-if="props.row.status == 14", pill='', variant='warning') 
-                                        categories(:arr="categories['status']", :id="props.row.status")
-                                    b-badge(v-if="props.row.status == 16",pill='',variant='success')
-                                        categories(:arr="categories['status']", :id="props.row.status")
-                                    b-badge(v-if="props.row.status == 15",pill='',variant='danger')
-                                        categories(:arr="categories['status']", :id="props.row.status")
-                                div(v-else-if="props.column.field == 'company_name'")
-                                    categories(:arr="categories['company']", :id="props.row.company_name")
-                                div(v-else-if="props.column.field == 'Edit'")
-                                    div(style="display:flex")
-                                        b-button(variant="warning mx-2",@click="editData(props.row, props.row.originalIndex)") Edit
-                                        b-button(variant="secondary mx-2",@click="duplicateData(props.row, props.row.originalIndex)") Duplicate
-                                        b-button(variant="danger mx-2",@click="deleteData(props.row, props.row.originalIndex)") Delete
-                                div(v-else)
-                                    span {{props.formattedRow[props.column.field]}}
+                vue-good-table(:columns='configs.columns',
+                        :rows='configs.rows2',
+                        :line-numbers="true",
+                        :search-options="{enabled: true, skipDiacritics: true, trigger: 'enter', placeholder: 'Search name then press Enter'}"
+                        :pagination-options="{enabled: true, mode: 'records', perPage: 10, perPageDropdown: [10, 20, 30, 40, 50], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev', rowsPerPageLabel: 'Rows per page', ofLabel: 'of', pageLabel: 'page', allLabel: 'All'}"
+                    ) 
+                    template(slot="table-row" slot-scope="props")
+                        div(v-if="props.row.time && props.column.field == 'time'")
+                            div(v-if="props.row.time && props.row.time.soHD") 
+                                b-badge(v-if="props.row.status == 14", pill='', variant='warning') {{props.row.time.soHD}}
+                                b-badge(v-if="props.row.status == 16",pill='',variant='success') {{props.row.time.soHD}}
+                                b-badge(v-if="props.row.status == 15",pill='',variant='danger') {{props.row.time.soHD}}
+                            div(v-if="props.row.time && (isDate(props.row.time.day_from) === false || isDate(props.row.time.day_to) === false)")
+                                b-badge(pill='', variant='danger') {{ dateToDMY(props.row.time.day_from) }} ~ {{ dateToDMY(props.row.time.day_to) }}
+                            div(v-else="")
+                                b-badge(v-if="props.row.time && props.row.time.day_from && props.row.time.day_to", pill='', variant='Light') {{props.row.time.day_from}} ~ {{props.row.time.day_to}}
+                        div(v-else-if="props.column.field == 'status'")
+                            b-badge(v-if="props.row.status == 14", pill='', variant='warning') 
+                                categories(:arr="categories['status']", :id="props.row.status")
+                            b-badge(v-if="props.row.status == 16",pill='',variant='success')
+                                categories(:arr="categories['status']", :id="props.row.status")
+                            b-badge(v-if="props.row.status == 15",pill='',variant='danger')
+                                categories(:arr="categories['status']", :id="props.row.status")
+                        div(v-else-if="props.column.field == 'company_name'")
+                            categories(:arr="categories['company']", :id="props.row.company_name")
+                        div(v-else-if="props.column.field == 'Edit'")
+                            div(style="display:flex")
+                                b-button(variant="warning mx-2",@click="editData(props.row, props.row.originalIndex)") Edit
+                                b-button(variant="secondary mx-2",@click="duplicateData(props.row, props.row.originalIndex)") Duplicate
+                                b-button(variant="danger mx-2",@click="deleteData(props.row, props.row.originalIndex)") Delete
+                        div(v-else)
+                            span {{props.formattedRow[props.column.field]}}
 script(type="text/javascript").
     (function(){
         window.categories = !{JSON.stringify(locals.categories)};

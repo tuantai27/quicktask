@@ -239,7 +239,7 @@ Vue.component('my-date-input', {
                 success:function(data,status,req){
                     // debugger;
                     if (status === "success") {
-                        callback(null, data.result);
+                        callback(null, { ...data.result, uuid : uuid});
                     } else {
                         callback(data);
                     }
@@ -452,6 +452,7 @@ Vue.component('my-date-input', {
             try {
                 if (vueApp.beforeCheck()) {
                     const row = vueApp.formatData(vueApp.$data.modal.dataModal);
+
                     const index = vueApp.getIndexByUUID(row);
                     if (index === -1) {
                         vueApp.$data.modal.showModal = false;
