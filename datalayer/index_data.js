@@ -92,7 +92,8 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
             params.push(value);
         }
         
-
+        console.log(sql.join(' '));
+        console.log(params);
         await out.db.query(sql.join(' '), params);
     }
     
