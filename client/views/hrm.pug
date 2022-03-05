@@ -267,11 +267,11 @@ body
             .col-md-2
                 b-form-group(label="Ngày Từ:",label-cols-sm="4",label-align-sm="right")
                     b-input-group
-                        my-date-input(v-model="search.day_from",@change="onSearch")
+                        my-date-input(v-model="search.day_from",:doSomethingOnChange="onSearch")
             .col-2
                 b-form-group(label="Ngày Đến:",label-cols-sm="4",label-align-sm="right")
                     b-input-group
-                        my-date-input(v-model="search.day_to",@change="onSearch")
+                        my-date-input(v-model="search.day_to",:doSomethingOnChange="onSearch")
             .col-md-3
                 b-form-group(label='Trạng Thái:',label-cols-sm="3",label-align-sm="right")
                     b-form-checkbox-group(style="padding: 5px;",v-model='search.status_name',@change="onSearch",:options="getOptions('status')")
