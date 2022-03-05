@@ -53,7 +53,7 @@ const out = {
         //    params.push(index_data.setValue(day_from,'date'));
         //}
         
-        if (company_name) {
+        if (company_name && company_name != 17) {
            sql.push(filter('idx_int_data', 2, '='));
            params.push(company_name);
         }
