@@ -41,12 +41,11 @@ Vue.component('date-picker', VueBootstrapDatetimePicker);
 Vue.component('my-date-input', {
     props: [
         "value",
-        "disabled",
-        "doSomethingOnChange"
+        "disabled"
     ],
     template: `
         <div>
-            <date-picker @dp-change="doSomethingOnChange" v-model="displayValue" :config="{format: 'DD-MM-YYYY',  useCurrent: false}"></date-picker>
+            <date-picker v-model="displayValue" :config="{format: 'DD-MM-YYYY',  useCurrent: false}"></date-picker>
         </div>`,
     data: function() {
         return {

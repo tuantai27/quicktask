@@ -263,21 +263,20 @@ body
                 b-button(variant="primary",@click="addData") Add
             .col-md-2
                 b-form-group(label="Công Ty:",label-cols-sm="3",label-align-sm="right")
-                    b-form-select(:options="getOptions('company')",v-model="search.company_name",@change="onSearch")
+                    b-form-select(:options="getOptions('company')",v-model="search.company_name")
             .col-md-2
                 b-form-group(label="Ngày Từ:",label-cols-sm="4",label-align-sm="right")
                     b-input-group
-                        my-date-input(v-model="search.day_from",:doSomethingOnChange="onSearch")
+                        my-date-input(v-model="search.day_from")
             .col-2
                 b-form-group(label="Ngày Đến:",label-cols-sm="4",label-align-sm="right")
                     b-input-group
-                        my-date-input(v-model="search.day_to",:doSomethingOnChange="onSearch")
+                        my-date-input(v-model="search.day_to")
             .col-md-3
                 b-form-group(label='Trạng Thái:',label-cols-sm="3",label-align-sm="right")
-                    b-form-checkbox-group(style="padding: 5px;",v-model='search.status_name',@change="onSearch",:options="getOptions('status')")
+                    b-form-checkbox-group(style="padding: 5px;",v-model='search.status_name',:options="getOptions('status')")
             .col-md-2
-                b-form-group(label="Tổng cộng:",label-cols-sm="4",label-align-sm="right")
-                    my-currency-input(v-model="configs.total_luong",:disabled="true")   
+                b-button(variant="mx-2",@click="onSearch") Tìm Kiếm
         .row(v-show="!forms.isLoading")
             div
             .col
