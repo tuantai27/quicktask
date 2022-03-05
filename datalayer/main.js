@@ -81,6 +81,8 @@ out.uData = async ({project_id, uuid, table_id, meta_data, UserId}, index) => {
     params.push(project_id);
     params.push(UserId);
 
+    console.log(sql.join(' '));
+    console.log(params);
     await out.db.query(sql.join(' '), params);
     
     if (index && Array.isArray(index) && index.length > 0) {
