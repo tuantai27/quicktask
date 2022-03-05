@@ -42,7 +42,7 @@ Vue.component('my-date-input', {
     props: ["value","disabled"],
     template: `
         <div>
-            <date-picker v-model="displayValue" :config="{format: 'DD-MM-YYYY'}"></date-picker>
+            <date-picker v-model="displayValue" :config="{format: 'DD-MM-YYYY',  useCurrent: false}"></date-picker>
         </div>`,
     data: function() {
         return {

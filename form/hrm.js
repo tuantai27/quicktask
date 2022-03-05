@@ -43,15 +43,15 @@ const out = {
            params = params.concat(status_name);
         }
 
-        //if (day_to) {
-        //    sql.push(filter('idx_date_data', 5, '<='));
-        //    params.push(index_data.setValue(day_to,'date'));
-        //}
+        if (day_to) {
+           sql.push(filter('idx_date_data', 5, '<='));
+           params.push(index_data.setValue(day_to,'date'));
+        }
 
-        //if (day_from) {
-        //    sql.push(filter('idx_date_data', 6, '>='));
-        //    params.push(index_data.setValue(day_from,'date'));
-        //}
+        if (day_from) {
+           sql.push(filter('idx_date_data', 6, '>='));
+           params.push(index_data.setValue(day_from,'date'));
+        }
         
         if (company_name && company_name != 17) {
            sql.push(filter('idx_int_data', 2, '='));

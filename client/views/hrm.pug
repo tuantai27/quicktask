@@ -129,9 +129,9 @@ body
                                 template(#cell(active)='row')
                                     b-form-checkbox(switch="", size="lg", v-model="row.item.active",type="number",@change="changeActive(row.item, row.index)")
                                 template(#cell(day_from)='row')
-                                    date-picker(v-model="row.item.day_from",:config="{format: 'DD-MM-YYYY'}")
+                                    my-date-input(v-model="row.item.day_from")
                                 template(#cell(day_to)='row')
-                                    date-picker(v-model="row.item.day_to",:config="{format: 'DD-MM-YYYY'}")
+                                    my-date-input(v-model="row.item.day_to")
                                 template(#cell(luong)='row')
                                     my-currency-input(v-model="row.item.luong")
                                 template(#cell(soHD)='row')
@@ -189,7 +189,7 @@ body
                                 template(#cell(cmnd)='row')
                                     b-form-input(v-model="row.item.cmnd")
                                 template(#cell(ngay_sinh)='row')
-                                    date-picker(v-model="row.item.ngay_sinh",:config="{format: 'DD-MM-YYYY'}")
+                                    my-date-input(v-model="row.item.ngay_sinh")
                                 template(#cell(quoc_tich)='row')
                                     b-form-input(v-model="row.item.quoc_tich")
                                 template(#cell(quan_he)='row')
@@ -199,7 +199,7 @@ body
                                 template(#cell(note)='row')
                                     b-form-input(v-model="row.item.note")
                                 template(#cell(month_from)='row')
-                                    date-picker(v-model="row.item.month_from",:config="{format: 'DD-MM-YYYY'}")
+                                    my-date-input(v-model="row.item.month_from")
                                 template(#cell(show_details)='row')
                                     b-button.mr-2(size='sm' @click='clickDetail(row)')
                                         | {{ row.detailsShowing ? &apos;Hide&apos; : &apos;Show&apos;}} Details
@@ -267,11 +267,11 @@ body
             .col-md-2
                 b-form-group(label="Ngày Từ:",label-cols-sm="4",label-align-sm="right")
                     b-input-group
-                        date-picker(v-model="search.day_from",:config="{format: 'DD-MM-YYYY'}",@dp-change="onSearch")
+                        my-date-input(v-model="search.day_from",@dp-change="onSearch")
             .col-2
                 b-form-group(label="Ngày Đến:",label-cols-sm="4",label-align-sm="right")
                     b-input-group
-                        date-picker(v-model="search.day_to",:config="{format: 'DD-MM-YYYY'}",@dp-change="onSearch")
+                        my-date-input(v-model="search.day_to",@dp-change="onSearch")
             .col-md-3
                 b-form-group(label='Trạng Thái:',label-cols-sm="3",label-align-sm="right")
                     b-form-checkbox-group(style="padding: 5px;",v-model='search.status_name',@change="onSearch",:options="getOptions('status')")
