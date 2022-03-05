@@ -44,12 +44,12 @@ const out = {
         }
 
         if (day_to) {
-           sql.push(filter('idx_date_data', 5, '<='));
+           sql.push(filter('idx_date_data', 6, '<='));
            params.push(index_data.setValue(day_to,'date'));
         }
 
         if (day_from) {
-           sql.push(filter('idx_date_data', 6, '>='));
+           sql.push(filter('idx_date_data', 5, '>='));
            params.push(index_data.setValue(day_from,'date'));
         }
         
