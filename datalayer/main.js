@@ -89,7 +89,7 @@ out.uData = async ({project_id, uuid, table_id, meta_data, UserId}, index) => {
     if (index && Array.isArray(index) && index.length > 0) {
         const id = await out.getRowID({project_id, uuid, table_id});
         if (id) {
-            out.addIndex(index, id, {project_id, uuid, table_id, meta_data});
+            await out.addIndex(index, id, {project_id, uuid, table_id, meta_data});
         }
     }
 };

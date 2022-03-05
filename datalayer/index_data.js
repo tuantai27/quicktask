@@ -131,7 +131,7 @@ out.dData = async ({uuid, type}) => {
 
     console.log(sql.join(' '));
     console.log(params);
-    await out.db.query(sql.join(' '), params);
+    // await out.db.query(sql.join(' '), params);
 };
 
 out.dAll = async (id) => {
