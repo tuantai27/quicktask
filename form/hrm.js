@@ -38,10 +38,10 @@ const out = {
         params.push(project_id);
         params.push(table_id);
 
-        //if (Array.isArray(status_name) && status_name.length > 0) {
-        //    sql.push(filter('idx_int_data', 3, 'in', status_name.length));
-        //    params = params.concat(status_name);
-        //}
+        if (Array.isArray(status_name) && status_name.length > 0) {
+           sql.push(filter('idx_int_data', 3, 'in', status_name.length));
+           params = params.concat(status_name);
+        }
 
         //if (day_to) {
         //    sql.push(filter('idx_date_data', 5, '<='));
@@ -53,10 +53,10 @@ const out = {
         //    params.push(index_data.setValue(day_from,'date'));
         //}
         
-        //if (company_name) {
-        //    sql.push(filter('idx_int_data', 2, '='));
-        //    params.push(company_name);
-        //}
+        if (company_name) {
+           sql.push(filter('idx_int_data', 2, '='));
+           params.push(company_name);
+        }
 
         
         console.log(sql.join(' \n '));
