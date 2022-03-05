@@ -86,7 +86,8 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
         params.push(column_id);
         params.push(uuid_row);
         if (table_name === 'idx_date_data') {
-            params.push(stringToDate(value, 'dd-mm-yyyy', '-'));
+            params.push(value.toISOString());
+            // datePickerDate.toISOString();
 
         } else {
             params.push(value);
