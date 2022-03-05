@@ -535,7 +535,7 @@ Vue.component('my-date-input', {
                 return '';
             }
             let temp = null;
-            if (typeof date === 'string' && this.stringToDate(date, 'yyyy-mm-dd', '-')) {
+            if (typeof date === 'string' && this.stringToDate(date, 'dd-mm-yyyy', '-')) {
                 const dateParts = date.split("-");
                 temp = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2]); 
             } else {
