@@ -77,7 +77,7 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
         column_name : output,
         table_id    : table_id
     });
-    
+    console.log('a');
     if (column_id) {
         sql.push(`insert into ${table_name} (id, uuid, column_id, uuid_row, ${column_value}) values (?, ?, ?, ?, ?)`);
 
@@ -95,7 +95,7 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
         
         console.log(sql.join(' '));
         console.log(params);
-        await out.db.query(sql.join(' '), params);
+        // await out.db.query(sql.join(' '), params);
     }
     
 };
