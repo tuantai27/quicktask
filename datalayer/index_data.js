@@ -119,19 +119,19 @@ out.formattedYYYYMMDD = function (dateString) {
     return null;
 };
 
-out.dData = async ({uuid, type}) => {
+out.dData = async ({id, type}) => {
     const sql = [];
     const params = [];
     const {table_name} = out.getTable(type);
     
     sql.push(`delete from ${table_name}`);
-    sql.push(`where uuid        = ?`);
+    sql.push(`where id        = ?`);
 
-    params.push(uuid);
+    params.push(id);
 
     console.log(sql.join(' '));
     console.log(params);
-    // await out.db.query(sql.join(' '), params);
+    await out.db.query(sql.join(' '), params);
 };
 
 out.dAll = async (id) => {
@@ -139,7 +139,7 @@ out.dAll = async (id) => {
     const allTable = Object.keys(out.dataTable);
 
     for (const type of allTable) {
-        queue.push(out.dData({uuid :id, type:type}));
+        queue.push(out.dData({id :id, type:type}));
     }
     await Promise.all(queue);   
 };
