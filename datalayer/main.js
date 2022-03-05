@@ -66,20 +66,21 @@ out.uData = async ({project_id, uuid, table_id, meta_data, UserId}, index) => {
     
     sql.push(`update all_data_table`);
     sql.push(`set   meta_data   = ?`);
+    sql.push(`      ,updated_by  = ?`);
     sql.push(`where uuid        = ?`);
     sql.push(`and   table_id    = ?`);
     sql.push(`and   project_id  = ?`);
-    sql.push(`and   updated_by  = ?`);
 
     if (typeof meta_data === "string") {
         params.push(meta_data);
     } else {
         params.push(JSON.stringify(meta_data));
     }
+    params.push(UserId);
     params.push(uuid);
     params.push(table_id);
     params.push(project_id);
-    params.push(UserId);
+    
 
     console.log(sql.join(' '));
     console.log(params);
