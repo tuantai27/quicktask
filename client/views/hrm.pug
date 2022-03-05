@@ -276,7 +276,7 @@ body
                 b-form-group(label='Trạng Thái:',label-cols-sm="3",label-align-sm="right")
                     b-form-checkbox-group(style="padding: 5px;",v-model='search.status_name',:options="getOptions('status')")
             .col-md-2
-                b-button(variant="mx-2",@click="onSearch") Tìm Kiếm
+                b-button(variant="secondary mx-2",@click="onSearch") Tìm Kiếm
         .row(v-show="!forms.isLoading")
             div
             .col

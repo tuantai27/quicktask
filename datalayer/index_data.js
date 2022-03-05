@@ -137,7 +137,7 @@ out.dAll = async (id) => {
     const allTable = Object.keys(out.dataTable);
 
     for (const type of allTable) {
-        queue.push(out.dData({id :id, type:type}));
+        queue.push(out.dData({uuid :id, type:type}));
     }
     await Promise.all(queue);   
 };
