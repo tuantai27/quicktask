@@ -85,8 +85,8 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
         params.push(uuid);
         params.push(column_id);
         params.push(uuid_row);
-        if (table_name === 'idx_date_data' && value === 'string' && out.isValidDateYYYYMMDD(value)) {
-            params.push(out.formattedYYYYMMDD(value));
+        if (table_name === 'idx_date_data' && value === 'string' && out.isValidDate(value)) {
+            params.push(out.stringToDate(value, 'dd-mm-yyyy', '-'));
 
         } else {
             params.push(value);
@@ -98,9 +98,9 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
     
 };
 
-out.isValidDateYYYYMMDD = function (dateString) {
+out.isValidDate = function (dateString) {
     var regEx = /^\d{2}-\d{2}-\d{4}$/;
-    return dateString.match(regEx) != null;
+    return (dateString.match(regEx) != null);
 };
 
 out.formattedYYYYMMDD = function (dateString) {
