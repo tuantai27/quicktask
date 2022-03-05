@@ -88,9 +88,10 @@ Vue.component('my-date-input', {
                 try {
                     this.$emit('input', modifiedValue);
                 } catch(err) {
+                    this.$emit('input', '');
                     console.log(err);
                 }
-                this.$emit('input', '');
+                
             }
         }
     }
