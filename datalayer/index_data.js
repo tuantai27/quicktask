@@ -85,7 +85,7 @@ out.iData = async ({id, uuid, meta_data}, {type, input, output}, project_id, tab
         params.push(uuid);
         params.push(column_id);
         params.push(uuid_row);
-        if (table_name === 'idx_date_data' && value === 'string' && out.isValidDate(value)) {
+        if (table_name === 'idx_date_data') {
             params.push(out.stringToDate(value, 'dd-mm-yyyy', '-'));
 
         } else {
