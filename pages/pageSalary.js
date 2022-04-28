@@ -40,16 +40,17 @@ async function getDataSalary(req, res, next) {
 };
 
 async function getDataSalaryMonth(req, res, next) {
-    const data = [
-        '2021 Dec',
-        '2021 Nov',
-        '2021 Oct',
-        '2021 Sep',
-        '2021 Aug',
-        '2021 Jul',
-        '2021 Jun',
-        '2021 May'
-    ];
+    const arr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    const data = [];
+
+    for (let i = 2021; i < 2025; i++) {
+        for (let j = 0; j < arr.length; j++) {
+            const element = arr[j];
+            data.push(`${i} ${element}`);
+        }
+        
+    }
+
     return res.status(200).send({ status :"finish", result: data});
 };
 
