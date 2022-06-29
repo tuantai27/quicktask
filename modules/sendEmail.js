@@ -1,11 +1,9 @@
-const nodemailer = require('nodemailer');
-const fs = require('fs');
+﻿const fs = require('fs');
+const path = require('path');
+const sendMail = require('./gmail');
 const config = require('../config');
 
-const output = {
-    user : config.emailFrom,
-    pass : config.passwordEmail
-};
+const output = {};
 
 output.getFile = async function (fileName, pathFile) {
     const resultData = await new Promise((resolve, reject) => {
@@ -22,7 +20,7 @@ output.getFile = async function (fileName, pathFile) {
         filename    : fileName,
         content     : resultData
     };
-}
+};
 
 output.deleteFile = async function (pathFile) {
     return await new Promise((resolve, reject) => {
@@ -33,16 +31,9 @@ output.deleteFile = async function (pathFile) {
             resolve('file deleted successfully');
         });
     });
-}
+};
 
 output.send = async function(monthly, workerName, emailTo, emailBcc, uuid, attachments) {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: output.user,
-            pass: output.pass
-        }
-    });
     const m_monthly = monthly.replace(/[ ]/g,'');
 
     const arrStyleButton = [];
@@ -97,24 +88,20 @@ output.send = async function(monthly, workerName, emailTo, emailBcc, uuid, attac
     arrMessage.push(`</td>`);
     arrMessage.push(`</tr>`);
     arrMessage.push(`</table>`);
-    return new Promise((resolve, reject) => {
-        transporter.sendMail({
-            from      : config.emailFrom,
-            to        : emailTo,
-            // to        : "tuantai19@gmail.com",
-            bcc       : emailBcc,
-            subject   : `BANG LUONG NAM ${monthly}-NV ${workerName}`,
-            html      : arrMessage.join(''),
-            attachments: attachments
-        }, function (err, success) {    
-            if (err) {
-                console.log(err);
-                return reject(err);
-            }
-            console.log({ success });
-            resolve(success);
-        });
-    });
+
+
+    const options = {
+        to          : emailTo,
+        bcc         : emailBcc,
+        subject     : `BANG LUONG NAM ${monthly}-NV ${workerName}`,
+        html        : arrMessage.join(''),
+        attachments : attachments,
+        textEncoding: 'base64',
+    };
+
+    const messageId = await sendMail(options);
+    console.log(messageId);
+    return messageId;
 };
 
 module.exports = output;
